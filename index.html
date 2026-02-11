@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card Tracker Pro</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Archivo:wght@400;600;700&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    :root {
+      --primary: #FF6B35;
+      --secondary: #004E89;
+      --accent: #F7B801;
+      --dark: #1A1A2E;
+      --light: #F8F9FA;
+      --success: #00D9A3;
+      --danger: #FF4757;
+      --card-bg: #FFFFFF;
+      --shadow: 0 4px 20px rgba(0,0,0,0.08);
+      --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+    }
+    
+    body {
+      font-family: 'Archivo', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: var(--dark);
+      padding-bottom: 80px;
+    }
+    
+    .header {
+      background: var(--card-bg);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .header-left h1 {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 32px;
+      color: var(--primary);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    
+    .header-left p {
+      color: #666;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+    
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .user-email {
+      font-size: 13px;
+      color: #666;
+      display: none;
+    }
+    
+    .logout-btn {
+      background: var(--danger);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: none;
+    }
+    
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .auth-container {
+      max-width: 450px;
+      margin: 60px auto;
+      padding: 20px;
+    }
+    
+    .auth-card {
+      background: var(--card-bg);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .auth-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 36px;
+      color: var(--primary);
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+      text-align: center;
+    }
+    
+    .auth-subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 15px;
+    }
+    
+    .auth-toggle {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #666;
+    }
+    
+    .auth-toggle a {
+      color: var(--primary);
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    
+    .auth-toggle a:hover {
+      text-decoration: underline;
+    }
+    
+    .error-message {
+      background: #FFE5E5;
+      border: 2px solid var(--danger);
+      color: #C00;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      display: none;
+    }
+    
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+    
+    .stat-card {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--primary);
+    }
+    
+    .stat-card.secondary::before {
+      background: var(--secondary);
+    }
+    
+    .stat-card.accent::before {
+      background: var(--accent);
+    }
+    
+    .stat-card.success::before {
+      background: var(--success);
+    }
+    
+    .stat-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: #888;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--dark);
+      font-family: 'Bebas Neue', cursive;
+      letter-spacing: 1px;
+    }
+    
+    .goal-card {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      padding: 25px;
+      border-radius: 20px;
+      color: white;
+      box-shadow: var(--shadow-lg);
+      margin-bottom: 25px;
+    }
+    
+    .goal-amount {
+      font-size: 48px;
+      font-weight: 700;
+      font-family: 'Bebas Neue', cursive;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+    
+    .goal-label {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 15px;
+    }
+    
+    .progress-bar {
+      background: rgba(255,255,255,0.2);
+      height: 12px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    
+    .progress-fill {
+      background: var(--accent);
+      height: 100%;
+      border-radius: 10px;
+      transition: width 0.5s ease;
+      box-shadow: 0 0 20px rgba(247,184,1,0.5);
+    }
+    
+    .progress-text {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    .form-card {
+      background: var(--card-bg);
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #E5E5E5;
+      border-radius: 12px;
+      font-size: 16px;
+      font-family: 'Archivo', sans-serif;
+      transition: all 0.3s ease;
+      background: var(--light);
+    }
+    
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: white;
+    }
+    
+    .form-textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Archivo', sans-serif;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(255,107,53,0.3);
+    }
+    
+    .btn-primary:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 10px rgba(255,107,53,0.3);
+    }
+    
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .history-item {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      position: relative;
+      border-left: 4px solid var(--primary);
+    }
+    
+    .history-item.purchase {
+      border-left-color: var(--secondary);
+    }
+    
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 12px;
+    }
+    
+    .history-title {
+      font-weight: 600;
+      color: var(--dark);
+      font-size: 16px;
+      flex: 1;
+    }
+    
+    .history-amount {
+      font-weight: 700;
+      font-size: 18px;
+      font-family: 'Bebas Neue', cursive;
+      letter-spacing: 1px;
+    }
+    
+    .history-amount.positive {
+      color: var(--success);
+    }
+    
+    .history-amount.negative {
+      color: var(--danger);
+    }
+    
+    .history-details {
+      display: flex;
+      gap: 15px;
+      font-size: 13px;
+      color: #666;
+      flex-wrap: wrap;
+    }
+    
+    .history-detail {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .badge-ebay {
+      background: #FFE0B2;
+      color: #E65100;
+    }
+    
+    .badge-whatnot {
+      background: #E1BEE7;
+      color: #6A1B9A;
+    }
+    
+    .nav-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      z-index: 100;
+    }
+    
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-radius: 12px;
+      color: #888;
+    }
+    
+    .nav-item.active {
+      color: var(--primary);
+      background: rgba(255,107,53,0.1);
+    }
+    
+    .nav-icon {
+      font-size: 24px;
+    }
+    
+    .nav-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #888;
+    }
+    
+    .empty-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+      opacity: 0.3;
+    }
+    
+    .empty-text {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+    
+    .empty-subtext {
+      font-size: 14px;
+      opacity: 0.7;
+    }
+    
+    .month-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+    
+    .month-card {
+      background: var(--card-bg);
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    
+    .month-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    
+    .month-value {
+      font-size: 20px;
+      font-weight: 700;
+      font-family: 'Bebas Neue', cursive;
+      color: var(--dark);
+    }
+    
+    .delete-btn {
+      background: var(--danger);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .row-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+    
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+    
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- LOADING OVERLAY -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <!-- AUTH SCREEN -->
+  <div id="authScreen" style="display: none;">
+    <div class="auth-container">
+      <div class="auth-card">
+        <div class="auth-title">📊 Card Tracker Pro</div>
+        <div class="auth-subtitle" id="authSubtitle">Sign in to track your sports card business</div>
+        
+        <div id="errorMessage" class="error-message"></div>
+        
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" id="authEmail" placeholder="your@email.com">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="authPassword" placeholder="••••••••">
+        </div>
+        
+        <button class="btn btn-primary" id="authButton" onclick="handleAuth()">Sign In</button>
+        
+        <div class="auth-toggle">
+          <span id="authToggleText">Don't have an account?</span>
+          <a onclick="toggleAuthMode()">Sign Up</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETUP MODAL -->
+  <div id="setupModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center;">
+    <div style="background: white; padding: 40px; border-radius: 20px; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+      <h2 style="font-family: 'Bebas Neue', cursive; font-size: 36px; color: var(--primary); margin-bottom: 10px; letter-spacing: 2px;">Welcome to Card Tracker Pro!</h2>
+      <p style="color: #666; margin-bottom: 30px; font-size: 16px;">Let's set up your account to get started</p>
+      
+      <div class="form-group">
+        <label class="form-label">Your Name (Optional)</label>
+        <input type="text" class="form-input" id="setupName" placeholder="Enter your name">
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label">Annual Profit Goal</label>
+        <input type="number" class="form-input" id="setupGoal" placeholder="50000" value="50000">
+        <p style="font-size: 13px; color: #888; margin-top: 8px;">How much profit do you want to make this year?</p>
+      </div>
+      
+      <button class="btn btn-primary" onclick="completeSetup()">🚀 Get Started</button>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="mainApp" style="display: none;">
+    <div class="header">
+      <div class="header-left">
+        <h1>📊 Card Tracker Pro</h1>
+        <p id="headerGoal">Track your progress</p>
+      </div>
+      <div class="header-right">
+        <span class="user-email" id="userEmail"></span>
+        <button class="logout-btn" onclick="handleLogout()">Logout</button>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- DASHBOARD TAB -->
+      <div id="dashboard" class="tab-content active">
+        <div class="goal-card">
+          <div class="goal-amount" id="ytdProfit">$0</div>
+          <div class="goal-label">Year-to-Date Profit</div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+          </div>
+          <div class="progress-text"><span id="progressPercent">0</span>% to <span id="goalDisplay">Goal</span></div>
+        </div>
+        
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-label">Total Sales</div>
+            <div class="stat-value" id="totalSales">$0</div>
+          </div>
+          <div class="stat-card secondary">
+            <div class="stat-label">Items Sold</div>
+            <div class="stat-value" id="itemsSold">0</div>
+          </div>
+          <div class="stat-card accent">
+            <div class="stat-label">Avg Margin</div>
+            <div class="stat-value" id="avgMargin">0%</div>
+          </div>
+          <div class="stat-card success">
+            <div class="stat-label">This Month</div>
+            <div class="stat-value" id="monthProfit">$0</div>
+          </div>
+        </div>
+        
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-label">eBay</div>
+            <div class="stat-value" id="ebayTotal">$0</div>
+          </div>
+          <div class="stat-card secondary">
+            <div class="stat-label">Whatnot</div>
+            <div class="stat-value" id="whatnotTotal">$0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADD SALE TAB -->
+      <div id="addSale" class="tab-content">
+        <div class="form-card">
+          <h2 style="margin-bottom: 20px; color: var(--primary); font-family: 'Bebas Neue', cursive; font-size: 28px; letter-spacing: 1px;">Add Sale</h2>
+          
+          <div class="form-group">
+            <label class="form-label">Platform</label>
+            <select class="form-select" id="salePlatform">
+              <option value="eBay">eBay</option>
+              <option value="Whatnot">Whatnot</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Item Description</label>
+            <input type="text" class="form-input" id="saleItem" placeholder="e.g., 2023 Panini Prizm Jordan Rookie PSA 10">
+          </div>
+          
+          <div class="row-group">
+            <div class="form-group">
+              <label class="form-label">Sale Price</label>
+              <input type="number" class="form-input" id="salePrice" placeholder="0.00" step="0.01">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Cost Paid</label>
+              <input type="number" class="form-input" id="saleCost" placeholder="0.00" step="0.01">
+            </div>
+          </div>
+          
+          <div class="row-group">
+            <div class="form-group">
+              <label class="form-label">Fees</label>
+              <input type="number" class="form-input" id="saleFees" placeholder="0.00" step="0.01">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Shipping Cost</label>
+              <input type="number" class="form-input" id="saleShipping" placeholder="0.00" step="0.01">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Notes (Optional)</label>
+            <textarea class="form-textarea" id="saleNotes" placeholder="Additional details..."></textarea>
+          </div>
+          
+          <button class="btn btn-primary" onclick="addSale()">💰 Add Sale</button>
+        </div>
+      </div>
+
+      <!-- ADD PURCHASE TAB -->
+      <div id="addPurchase" class="tab-content">
+        <div class="form-card">
+          <h2 style="margin-bottom: 20px; color: var(--secondary); font-family: 'Bebas Neue', cursive; font-size: 28px; letter-spacing: 1px;">Add Purchase</h2>
+          
+          <div class="form-group">
+            <label class="form-label">Source</label>
+            <select class="form-select" id="purchaseSource">
+              <option value="Estate Sale">Estate Sale</option>
+              <option value="Card Show">Card Show</option>
+              <option value="eBay">eBay</option>
+              <option value="Facebook Marketplace">Facebook Marketplace</option>
+              <option value="Craigslist">Craigslist</option>
+              <option value="Collection Purchase">Collection Purchase</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          
+          <div class="row-group">
+            <div class="form-group">
+              <label class="form-label">Total Cost</label>
+              <input type="number" class="form-input" id="purchaseCost" placeholder="0.00" step="0.01">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label"># of Items</label>
+              <input type="number" class="form-input" id="purchaseItems" placeholder="0">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea class="form-textarea" id="purchaseNotes" placeholder="What did you buy?"></textarea>
+          </div>
+          
+          <button class="btn btn-primary" onclick="addPurchase()">🛒 Add Purchase</button>
+        </div>
+      </div>
+
+      <!-- BULK IMPORT TAB -->
+      <div id="bulkImport" class="tab-content">
+        <h2 style="margin-bottom: 20px; color: var(--accent); font-family: 'Bebas Neue', cursive; font-size: 28px; letter-spacing: 1px;">Bulk Import</h2>
+        
+        <div class="form-card" style="margin-bottom: 20px;">
+          <h3 style="margin-bottom: 15px; color: var(--primary); font-size: 20px;">Import Sales from CSV</h3>
+          <p style="font-size: 14px; color: #666; margin-bottom: 15px;">
+            CSV should have columns: Platform, Item, Price, Cost, Fees, Shipping, Notes
+          </p>
+          <input type="file" id="salesCsvInput" accept=".csv" style="margin-bottom: 15px; padding: 10px; width: 100%; border: 2px dashed #ccc; border-radius: 8px;">
+          <button class="btn btn-primary" onclick="importSalesCsv()">📥 Import Sales</button>
+        </div>
+
+        <div class="form-card">
+          <h3 style="margin-bottom: 15px; color: var(--secondary); font-size: 20px;">Import Purchases from CSV</h3>
+          <p style="font-size: 14px; color: #666; margin-bottom: 15px;">
+            CSV should have columns: Source, Cost, Items, Notes
+          </p>
+          <input type="file" id="purchasesCsvInput" accept=".csv" style="margin-bottom: 15px; padding: 10px; width: 100%; border: 2px dashed #ccc; border-radius: 8px;">
+          <button class="btn btn-primary" onclick="importPurchasesCsv()">📥 Import Purchases</button>
+        </div>
+
+        <div class="form-card" style="margin-top: 20px; background: #FFF3CD; border: 2px solid #FFC107;">
+          <h4 style="margin-bottom: 10px; color: #856404;">💡 CSV Format Tips</h4>
+          <ul style="font-size: 13px; color: #856404; line-height: 1.8; margin-left: 20px;">
+            <li>First row should be column headers</li>
+            <li>Make sure column names match exactly (case-sensitive)</li>
+            <li>Numbers should not have dollar signs or commas</li>
+            <li>Dates will auto-populate to today's date</li>
+            <li>You can download your eBay sales report and import it!</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SALES HISTORY TAB -->
+      <div id="salesHistory" class="tab-content">
+        <h2 style="margin-bottom: 20px; color: var(--primary); font-family: 'Bebas Neue', cursive; font-size: 28px; letter-spacing: 1px;">Sales History</h2>
+        <div id="salesList" class="history-list"></div>
+      </div>
+
+      <!-- PURCHASES HISTORY TAB -->
+      <div id="purchasesHistory" class="tab-content">
+        <h2 style="margin-bottom: 20px; color: var(--secondary); font-family: 'Bebas Neue', cursive; font-size: 28px; letter-spacing: 1px;">Purchase History</h2>
+        <div id="purchasesList" class="history-list"></div>
+      </div>
+    </div>
+
+    <nav class="nav-bar">
+      <div class="nav-item active" onclick="switchTab('dashboard')">
+        <div class="nav-icon">📊</div>
+        <div class="nav-label">Dashboard</div>
+      </div>
+      <div class="nav-item" onclick="switchTab('addSale')">
+        <div class="nav-icon">💰</div>
+        <div class="nav-label">Add Sale</div>
+      </div>
+      <div class="nav-item" onclick="switchTab('addPurchase')">
+        <div class="nav-icon">🛒</div>
+        <div class="nav-label">Purchase</div>
+      </div>
+      <div class="nav-item" onclick="switchTab('bulkImport')">
+        <div class="nav-icon">📤</div>
+        <div class="nav-label">Import</div>
+      </div>
+      <div class="nav-item" onclick="switchTab('salesHistory')">
+        <div class="nav-icon">📋</div>
+        <div class="nav-label">History</div>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+    import { getDatabase, ref, set, get, push, remove, onValue } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+
+    // IMPORTANT: You need to replace this with YOUR Firebase config
+    // To get this:
+    // 1. Go to https://console.firebase.google.com/
+    // 2. Create a new project
+    // 3. Add a web app
+    // 4. Copy the firebaseConfig object here
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY_HERE",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const database = getDatabase(app);
+
+    // Global variables
+    window.currentUser = null;
+    window.isSignUp = false;
+    window.sales = [];
+    window.purchases = [];
+    window.settings = { name: '', profitGoal: 50000 };
+
+    // Show loading
+    function showLoading() {
+      document.getElementById('loadingOverlay').style.display = 'flex';
+    }
+
+    function hideLoading() {
+      document.getElementById('loadingOverlay').style.display = 'none';
+    }
+
+    // Auth state observer
+    onAuthStateChanged(auth, async (user) => {
+      hideLoading();
+      
+      if (user) {
+        window.currentUser = user;
+        document.getElementById('authScreen').style.display = 'none';
+        document.getElementById('mainApp').style.display = 'block';
+        document.getElementById('userEmail').textContent = user.email;
+        document.getElementById('userEmail').style.display = 'block';
+        document.querySelector('.logout-btn').style.display = 'block';
+        
+        await loadUserData();
+      } else {
+        window.currentUser = null;
+        document.getElementById('authScreen').style.display = 'block';
+        document.getElementById('mainApp').style.display = 'none';
+      }
+    });
+
+    // Load user data from Firebase
+    async function loadUserData() {
+      showLoading();
+      const userId = window.currentUser.uid;
+      
+      try {
+        // Load settings
+        const settingsRef = ref(database, `users/${userId}/settings`);
+        const settingsSnap = await get(settingsRef);
+        
+        if (settingsSnap.exists()) {
+          window.settings = settingsSnap.val();
+          updateHeader();
+          updateDashboard();
+        } else {
+          // First time user - show setup
+          showSetup();
+        }
+        
+        // Load sales
+        const salesRef = ref(database, `users/${userId}/sales`);
+        onValue(salesRef, (snapshot) => {
+          window.sales = [];
+          if (snapshot.exists()) {
+            snapshot.forEach((child) => {
+              window.sales.push({ id: child.key, ...child.val() });
+            });
+          }
+          updateDashboard();
+          renderSalesHistory();
+        });
+        
+        // Load purchases
+        const purchasesRef = ref(database, `users/${userId}/purchases`);
+        onValue(purchasesRef, (snapshot) => {
+          window.purchases = [];
+          if (snapshot.exists()) {
+            snapshot.forEach((child) => {
+              window.purchases.push({ id: child.key, ...child.val() });
+            });
+          }
+          renderPurchasesHistory();
+        });
+        
+      } catch (error) {
+        console.error('Error loading data:', error);
+        alert('Error loading your data. Please refresh the page.');
+      }
+      
+      hideLoading();
+    }
+
+    // Toggle auth mode
+    window.toggleAuthMode = function() {
+      window.isSignUp = !window.isSignUp;
+      
+      if (window.isSignUp) {
+        document.getElementById('authSubtitle').textContent = 'Create your account to get started';
+        document.getElementById('authButton').textContent = 'Sign Up';
+        document.getElementById('authToggleText').textContent = 'Already have an account?';
+      } else {
+        document.getElementById('authSubtitle').textContent = 'Sign in to track your sports card business';
+        document.getElementById('authButton').textContent = 'Sign In';
+        document.getElementById('authToggleText').textContent = "Don't have an account?";
+      }
+      
+      document.getElementById('errorMessage').style.display = 'none';
+    };
+
+    // Handle auth (sign in or sign up)
+    window.handleAuth = async function() {
+      const email = document.getElementById('authEmail').value.trim();
+      const password = document.getElementById('authPassword').value;
+      const errorDiv = document.getElementById('errorMessage');
+      
+      if (!email || !password) {
+        errorDiv.textContent = 'Please enter both email and password';
+        errorDiv.style.display = 'block';
+        return;
+      }
+      
+      if (password.length < 6) {
+        errorDiv.textContent = 'Password must be at least 6 characters';
+        errorDiv.style.display = 'block';
+        return;
+      }
+      
+      showLoading();
+      errorDiv.style.display = 'none';
+      
+      try {
+        if (window.isSignUp) {
+          await createUserWithEmailAndPassword(auth, email, password);
+        } else {
+          await signInWithEmailAndPassword(auth, email, password);
+        }
+      } catch (error) {
+        hideLoading();
+        let message = 'An error occurred. Please try again.';
+        
+        if (error.code === 'auth/email-already-in-use') {
+          message = 'This email is already registered. Try signing in instead.';
+        } else if (error.code === 'auth/invalid-email') {
+          message = 'Invalid email address.';
+        } else if (error.code === 'auth/user-not-found') {
+          message = 'No account found with this email.';
+        } else if (error.code === 'auth/wrong-password') {
+          message = 'Incorrect password.';
+        } else if (error.code === 'auth/invalid-credential') {
+          message = 'Invalid email or password.';
+        }
+        
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+      }
+    };
+
+    // Handle logout
+    window.handleLogout = async function() {
+      if (confirm('Are you sure you want to log out?')) {
+        showLoading();
+        await signOut(auth);
+        hideLoading();
+      }
+    };
+
+    // Show setup modal
+    window.showSetup = function() {
+      document.getElementById('setupModal').style.display = 'flex';
+    };
+
+    // Complete setup
+    window.completeSetup = async function() {
+      const name = document.getElementById('setupName').value.trim();
+      const goal = parseFloat(document.getElementById('setupGoal').value) || 50000;
+      
+      window.settings.name = name;
+      window.settings.profitGoal = goal;
+      
+      showLoading();
+      const userId = window.currentUser.uid;
+      await set(ref(database, `users/${userId}/settings`), window.settings);
+      
+      document.getElementById('setupModal').style.display = 'none';
+      updateHeader();
+      updateDashboard();
+      hideLoading();
+    };
+
+    // Update header
+    window.updateHeader = function() {
+      const goalText = window.settings.name 
+        ? `${window.settings.name}'s path to $${window.settings.profitGoal.toLocaleString()}`
+        : `Track your path to $${window.settings.profitGoal.toLocaleString()}`;
+      document.getElementById('headerGoal').textContent = goalText;
+    };
+
+    // Switch tabs
+    window.switchTab = function(tabName) {
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.nav-item').forEach(nav => {
+        nav.classList.remove('active');
+      });
+      
+      document.getElementById(tabName).classList.add('active');
+      event.currentTarget.classList.add('active');
+    };
+
+    // Add sale
+    window.addSale = async function() {
+      const platform = document.getElementById('salePlatform').value;
+      const item = document.getElementById('saleItem').value;
+      const price = parseFloat(document.getElementById('salePrice').value) || 0;
+      const cost = parseFloat(document.getElementById('saleCost').value) || 0;
+      const fees = parseFloat(document.getElementById('saleFees').value) || 0;
+      const shipping = parseFloat(document.getElementById('saleShipping').value) || 0;
+      const notes = document.getElementById('saleNotes').value;
+      
+      if (!item || price === 0) {
+        alert('Please fill in item description and sale price');
+        return;
+      }
+      
+      const netProfit = price - cost - fees - shipping;
+      
+      const sale = {
+        date: new Date().toISOString(),
+        platform,
+        item,
+        price,
+        cost,
+        fees,
+        shipping,
+        netProfit,
+        notes
+      };
+      
+      showLoading();
+      const userId = window.currentUser.uid;
+      await push(ref(database, `users/${userId}/sales`), sale);
+      
+      // Clear form
+      document.getElementById('saleItem').value = '';
+      document.getElementById('salePrice').value = '';
+      document.getElementById('saleCost').value = '';
+      document.getElementById('saleFees').value = '';
+      document.getElementById('saleShipping').value = '';
+      document.getElementById('saleNotes').value = '';
+      
+      hideLoading();
+      alert('✅ Sale added successfully!');
+      switchTab('dashboard');
+    };
+
+    // Add purchase
+    window.addPurchase = async function() {
+      const source = document.getElementById('purchaseSource').value;
+      const cost = parseFloat(document.getElementById('purchaseCost').value) || 0;
+      const items = parseInt(document.getElementById('purchaseItems').value) || 0;
+      const notes = document.getElementById('purchaseNotes').value;
+      
+      if (cost === 0) {
+        alert('Please enter total cost');
+        return;
+      }
+      
+      const purchase = {
+        date: new Date().toISOString(),
+        source,
+        cost,
+        items,
+        notes
+      };
+      
+      showLoading();
+      const userId = window.currentUser.uid;
+      await push(ref(database, `users/${userId}/purchases`), purchase);
+      
+      // Clear form
+      document.getElementById('purchaseCost').value = '';
+      document.getElementById('purchaseItems').value = '';
+      document.getElementById('purchaseNotes').value = '';
+      
+      hideLoading();
+      alert('✅ Purchase added successfully!');
+      switchTab('dashboard');
+    };
+
+    // Delete sale
+    window.deleteSale = async function(id) {
+      if (!confirm('Delete this sale?')) return;
+      
+      showLoading();
+      const userId = window.currentUser.uid;
+      await remove(ref(database, `users/${userId}/sales/${id}`));
+      hideLoading();
+    };
+
+    // Delete purchase
+    window.deletePurchase = async function(id) {
+      if (!confirm('Delete this purchase?')) return;
+      
+      showLoading();
+      const userId = window.currentUser.uid;
+      await remove(ref(database, `users/${userId}/purchases/${id}`));
+      hideLoading();
+    };
+
+    // Update dashboard
+    window.updateDashboard = function() {
+      const totalProfit = window.sales.reduce((sum, s) => sum + s.netProfit, 0);
+      const totalSalesAmount = window.sales.reduce((sum, s) => sum + s.price, 0);
+      const itemsSold = window.sales.length;
+      const avgMargin = totalSalesAmount > 0 ? (totalProfit / totalSalesAmount * 100) : 0;
+      
+      // Current month profit
+      const now = new Date();
+      const currentMonth = now.getMonth();
+      const currentYear = now.getFullYear();
+      const monthProfit = window.sales
+        .filter(s => {
+          const d = new Date(s.date);
+          return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+        })
+        .reduce((sum, s) => sum + s.netProfit, 0);
+      
+      // Platform breakdown
+      const ebayTotal = window.sales.filter(s => s.platform === 'eBay').reduce((sum, s) => sum + s.price, 0);
+      const whatnotTotal = window.sales.filter(s => s.platform === 'Whatnot').reduce((sum, s) => sum + s.price, 0);
+      
+      document.getElementById('ytdProfit').textContent = '$' + totalProfit.toFixed(0);
+      document.getElementById('totalSales').textContent = '$' + totalSalesAmount.toFixed(0);
+      document.getElementById('itemsSold').textContent = itemsSold;
+      document.getElementById('avgMargin').textContent = avgMargin.toFixed(1) + '%';
+      document.getElementById('monthProfit').textContent = '$' + monthProfit.toFixed(0);
+      document.getElementById('ebayTotal').textContent = '$' + ebayTotal.toFixed(0);
+      document.getElementById('whatnotTotal').textContent = '$' + whatnotTotal.toFixed(0);
+      
+      const progress = Math.min((totalProfit / window.settings.profitGoal) * 100, 100);
+      document.getElementById('progressBar').style.width = progress + '%';
+      document.getElementById('progressPercent').textContent = progress.toFixed(1);
+      
+      document.getElementById('goalDisplay').textContent = '$' + window.settings.profitGoal.toLocaleString() + ' Goal';
+    };
+
+    // Render sales history
+    window.renderSalesHistory = function() {
+      const list = document.getElementById('salesList');
+      
+      if (window.sales.length === 0) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">💳</div>
+            <div class="empty-text">No sales yet</div>
+            <div class="empty-subtext">Add your first sale to get started!</div>
+          </div>
+        `;
+        return;
+      }
+      
+      list.innerHTML = window.sales.map(sale => {
+        const date = new Date(sale.date).toLocaleDateString();
+        const profitClass = sale.netProfit > 0 ? 'positive' : 'negative';
+        
+        return `
+          <div class="history-item">
+            <div class="history-header">
+              <div class="history-title">${sale.item}</div>
+              <div class="history-amount ${profitClass}">$${sale.netProfit.toFixed(2)}</div>
+            </div>
+            <div class="history-details">
+              <span class="badge ${sale.platform === 'eBay' ? 'badge-ebay' : 'badge-whatnot'}">${sale.platform}</span>
+              <span>${date}</span>
+              <span>Sold: $${sale.price.toFixed(2)}</span>
+              <span>Cost: $${sale.cost.toFixed(2)}</span>
+            </div>
+            ${sale.notes ? `<div style="margin-top: 10px; font-size: 13px; color: #666;">${sale.notes}</div>` : ''}
+            <button class="delete-btn" onclick="deleteSale('${sale.id}')">Delete</button>
+          </div>
+        `;
+      }).join('');
+    };
+
+    // Render purchases history
+    window.renderPurchasesHistory = function() {
+      const list = document.getElementById('purchasesList');
+      
+      if (window.purchases.length === 0) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">🛒</div>
+            <div class="empty-text">No purchases yet</div>
+            <div class="empty-subtext">Track your inventory purchases here!</div>
+          </div>
+        `;
+        return;
+      }
+      
+      list.innerHTML = window.purchases.map(purchase => {
+        const date = new Date(purchase.date).toLocaleDateString();
+        const avgCost = purchase.items > 0 ? (purchase.cost / purchase.items) : 0;
+        
+        return `
+          <div class="history-item purchase">
+            <div class="history-header">
+              <div class="history-title">${purchase.source}</div>
+              <div class="history-amount negative">-$${purchase.cost.toFixed(2)}</div>
+            </div>
+            <div class="history-details">
+              <span>${date}</span>
+              <span>${purchase.items} items</span>
+              <span>Avg: $${avgCost.toFixed(2)}</span>
+            </div>
+            ${purchase.notes ? `<div style="margin-top: 10px; font-size: 13px; color: #666;">${purchase.notes}</div>` : ''}
+            <button class="delete-btn" onclick="deletePurchase('${purchase.id}')">Delete</button>
+          </div>
+        `;
+      }).join('');
+    };
+
+    // Import sales CSV
+    window.importSalesCsv = async function() {
+      const input = document.getElementById('salesCsvInput');
+      const file = input.files[0];
+      
+      if (!file) {
+        alert('Please select a CSV file');
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        const text = e.target.result;
+        const lines = text.split('\n').filter(line => line.trim());
+        
+        if (lines.length < 2) {
+          alert('CSV file is empty or invalid');
+          return;
+        }
+        
+        showLoading();
+        const headers = lines[0].split(',').map(h => h.trim());
+        let imported = 0;
+        const userId = window.currentUser.uid;
+        
+        for (let i = 1; i < lines.length; i++) {
+          const values = lines[i].split(',').map(v => v.trim());
+          
+          const row = {};
+          headers.forEach((header, idx) => {
+            row[header] = values[idx] || '';
+          });
+          
+          const platform = row.Platform || row.platform || 'eBay';
+          const item = row.Item || row.item || row['Item Description'] || row['Listing title'] || row.Description || '';
+          const price = parseFloat(row.Price || row.price || row['Sale Price'] || row['Total sales (Includes taxes)'] || 0);
+          const cost = parseFloat(row.Cost || row.cost || row['Cost Paid'] || 0);
+          const fees = parseFloat(row.Fees || row.fees || row['Total selling costs'] || 0);
+          const shipping = parseFloat(row.Shipping || row.shipping || row['Shipping Cost'] || 0);
+          const notes = row.Notes || row.notes || '';
+          
+          if (item && price > 0) {
+            const netProfit = price - cost - fees - shipping;
+            
+            const sale = {
+              date: new Date().toISOString(),
+              platform,
+              item,
+              price,
+              cost,
+              fees,
+              shipping,
+              netProfit,
+              notes
+            };
+            
+            await push(ref(database, `users/${userId}/sales`), sale);
+            imported++;
+          }
+        }
+        
+        hideLoading();
+        
+        if (imported > 0) {
+          alert(`✅ Successfully imported ${imported} sales!`);
+          input.value = '';
+        } else {
+          alert('No valid sales found in CSV. Check your column names and data.');
+        }
+      };
+      
+      reader.readAsText(file);
+    };
+
+    // Import purchases CSV
+    window.importPurchasesCsv = async function() {
+      const input = document.getElementById('purchasesCsvInput');
+      const file = input.files[0];
+      
+      if (!file) {
+        alert('Please select a CSV file');
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        const text = e.target.result;
+        const lines = text.split('\n').filter(line => line.trim());
+        
+        if (lines.length < 2) {
+          alert('CSV file is empty or invalid');
+          return;
+        }
+        
+        showLoading();
+        const headers = lines[0].split(',').map(h => h.trim());
+        let imported = 0;
+        const userId = window.currentUser.uid;
+        
+        for (let i = 1; i < lines.length; i++) {
+          const values = lines[i].split(',').map(v => v.trim());
+          
+          const row = {};
+          headers.forEach((header, idx) => {
+            row[header] = values[idx] || '';
+          });
+          
+          const source = row.Source || row.source || 'Other';
+          const cost = parseFloat(row.Cost || row.cost || row['Total Cost'] || 0);
+          const items = parseInt(row.Items || row.items || row['Number of Items'] || 0);
+          const notes = row.Notes || row.notes || row.Description || '';
+          
+          if (cost > 0) {
+            const purchase = {
+              date: new Date().toISOString(),
+              source,
+              cost,
+              items,
+              notes
+            };
+            
+            await push(ref(database, `users/${userId}/purchases`), purchase);
+            imported++;
+          }
+        }
+        
+        hideLoading();
+        
+        if (imported > 0) {
+          alert(`✅ Successfully imported ${imported} purchases!`);
+          input.value = '';
+        } else {
+          alert('No valid purchases found in CSV. Check your column names and data.');
+        }
+      };
+      
+      reader.readAsText(file);
+    };
+  </script>
+</body>
+</html>
