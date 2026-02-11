@@ -435,12 +435,13 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
-      padding: 8px 16px;
+      gap: 2px;
+      padding: 6px 10px;
       cursor: pointer;
       transition: all 0.3s ease;
       border-radius: 12px;
       color: #888;
+      min-width: 0;
     }
     
     .nav-item.active {
@@ -449,14 +450,14 @@
     }
     
     .nav-icon {
-      font-size: 24px;
+      font-size: 20px;
     }
     
     .nav-label {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
     }
     
     .empty-state {
@@ -684,6 +685,11 @@
           </div>
           
           <div class="form-group">
+            <label class="form-label">Sale Date</label>
+            <input type="date" class="form-input" id="saleDate">
+          </div>
+          
+          <div class="form-group">
             <label class="form-label">Item Description</label>
             <input type="text" class="form-input" id="saleItem" placeholder="e.g., 2023 Panini Prizm Jordan Rookie PSA 10">
           </div>
@@ -737,6 +743,11 @@
               <option value="Collection Purchase">Collection Purchase</option>
               <option value="Other">Other</option>
             </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Purchase Date</label>
+            <input type="date" class="form-input" id="purchaseDate">
           </div>
           
           <div class="row-group">
@@ -808,241 +819,93 @@
     </div>
 
     <nav class="nav-bar">
-      <div class="nav-item active" onclick="switchTab('dashboard')">
+      <div class="nav-item active" data-tab="dashboard" onclick="switchTab('dashboard')">
         <div class="nav-icon">📊</div>
         <div class="nav-label">Dashboard</div>
       </div>
-      <div class="nav-item" onclick="switchTab('addSale')">
+      <div class="nav-item" data-tab="addSale" onclick="switchTab('addSale')">
         <div class="nav-icon">💰</div>
         <div class="nav-label">Add Sale</div>
       </div>
-      <div class="nav-item" onclick="switchTab('addPurchase')">
+      <div class="nav-item" data-tab="addPurchase" onclick="switchTab('addPurchase')">
         <div class="nav-icon">🛒</div>
         <div class="nav-label">Purchase</div>
       </div>
-      <div class="nav-item" onclick="switchTab('bulkImport')">
+      <div class="nav-item" data-tab="bulkImport" onclick="switchTab('bulkImport')">
         <div class="nav-icon">📤</div>
         <div class="nav-label">Import</div>
       </div>
-      <div class="nav-item" onclick="switchTab('salesHistory')">
+      <div class="nav-item" data-tab="salesHistory" onclick="switchTab('salesHistory')">
         <div class="nav-icon">📋</div>
-        <div class="nav-label">History</div>
+        <div class="nav-label">Sales</div>
+      </div>
+      <div class="nav-item" data-tab="purchasesHistory" onclick="switchTab('purchasesHistory')">
+        <div class="nav-icon">🧾</div>
+        <div class="nav-label">Buys</div>
       </div>
     </nav>
   </div>
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
-    import { getDatabase, ref, set, get, push, remove, onValue } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+  <script>
 
-    // IMPORTANT: You need to replace this with YOUR Firebase config
-    // To get this:
-    // 1. Go to https://console.firebase.google.com/
-    // 2. Create a new project
-    // 3. Add a web app
-    // 4. Copy the firebaseConfig object here
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY_HERE",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const database = getDatabase(app);
-
-    // Global variables
-    window.currentUser = null;
-    window.isSignUp = false;
+    // ===== LOCAL STORAGE VERSION (no Firebase) =====
     window.sales = [];
     window.purchases = [];
     window.settings = { name: '', profitGoal: 50000 };
 
-    // Show loading
-    function showLoading() {
-      document.getElementById('loadingOverlay').style.display = 'flex';
+    function generateId() {
+      return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
     }
 
-    function hideLoading() {
-      document.getElementById('loadingOverlay').style.display = 'none';
+    function saveData() {
+      localStorage.setItem('ctp_sales', JSON.stringify(window.sales));
+      localStorage.setItem('ctp_purchases', JSON.stringify(window.purchases));
+      localStorage.setItem('ctp_settings', JSON.stringify(window.settings));
     }
 
-    // Auth state observer
-    onAuthStateChanged(auth, async (user) => {
-      hideLoading();
-      
-      if (user) {
-        window.currentUser = user;
-        document.getElementById('authScreen').style.display = 'none';
-        document.getElementById('mainApp').style.display = 'block';
-        document.getElementById('userEmail').textContent = user.email;
-        document.getElementById('userEmail').style.display = 'block';
-        document.querySelector('.logout-btn').style.display = 'block';
-        
-        await loadUserData();
-      } else {
-        window.currentUser = null;
-        document.getElementById('authScreen').style.display = 'block';
-        document.getElementById('mainApp').style.display = 'none';
+    function loadData() {
+      try {
+        window.sales = JSON.parse(localStorage.getItem('ctp_sales')) || [];
+        window.purchases = JSON.parse(localStorage.getItem('ctp_purchases')) || [];
+        const saved = JSON.parse(localStorage.getItem('ctp_settings'));
+        if (saved) window.settings = saved;
+      } catch (e) { console.error('Error loading data:', e); }
+    }
+
+    function showLoading() { document.getElementById('loadingOverlay').style.display = 'flex'; }
+    function hideLoading() { document.getElementById('loadingOverlay').style.display = 'none'; }
+
+    // Boot the app
+    window.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('authScreen').style.display = 'none';
+      document.getElementById('mainApp').style.display = 'block';
+      loadData();
+
+      if (!localStorage.getItem('ctp_settings')) {
+        document.getElementById('setupModal').style.display = 'flex';
       }
+
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('saleDate').value = today;
+      document.getElementById('purchaseDate').value = today;
+
+      updateHeader();
+      updateDashboard();
+      renderSalesHistory();
+      renderPurchasesHistory();
     });
 
-    // Load user data from Firebase
-    async function loadUserData() {
-      showLoading();
-      const userId = window.currentUser.uid;
-      
-      try {
-        // Load settings
-        const settingsRef = ref(database, `users/${userId}/settings`);
-        const settingsSnap = await get(settingsRef);
-        
-        if (settingsSnap.exists()) {
-          window.settings = settingsSnap.val();
-          updateHeader();
-          updateDashboard();
-        } else {
-          // First time user - show setup
-          showSetup();
-        }
-        
-        // Load sales
-        const salesRef = ref(database, `users/${userId}/sales`);
-        onValue(salesRef, (snapshot) => {
-          window.sales = [];
-          if (snapshot.exists()) {
-            snapshot.forEach((child) => {
-              window.sales.push({ id: child.key, ...child.val() });
-            });
-          }
-          updateDashboard();
-          renderSalesHistory();
-        });
-        
-        // Load purchases
-        const purchasesRef = ref(database, `users/${userId}/purchases`);
-        onValue(purchasesRef, (snapshot) => {
-          window.purchases = [];
-          if (snapshot.exists()) {
-            snapshot.forEach((child) => {
-              window.purchases.push({ id: child.key, ...child.val() });
-            });
-          }
-          renderPurchasesHistory();
-        });
-        
-      } catch (error) {
-        console.error('Error loading data:', error);
-        alert('Error loading your data. Please refresh the page.');
-      }
-      
-      hideLoading();
-    }
-
-    // Toggle auth mode
-    window.toggleAuthMode = function() {
-      window.isSignUp = !window.isSignUp;
-      
-      if (window.isSignUp) {
-        document.getElementById('authSubtitle').textContent = 'Create your account to get started';
-        document.getElementById('authButton').textContent = 'Sign Up';
-        document.getElementById('authToggleText').textContent = 'Already have an account?';
-      } else {
-        document.getElementById('authSubtitle').textContent = 'Sign in to track your sports card business';
-        document.getElementById('authButton').textContent = 'Sign In';
-        document.getElementById('authToggleText').textContent = "Don't have an account?";
-      }
-      
-      document.getElementById('errorMessage').style.display = 'none';
-    };
-
-    // Handle auth (sign in or sign up)
-    window.handleAuth = async function() {
-      const email = document.getElementById('authEmail').value.trim();
-      const password = document.getElementById('authPassword').value;
-      const errorDiv = document.getElementById('errorMessage');
-      
-      if (!email || !password) {
-        errorDiv.textContent = 'Please enter both email and password';
-        errorDiv.style.display = 'block';
-        return;
-      }
-      
-      if (password.length < 6) {
-        errorDiv.textContent = 'Password must be at least 6 characters';
-        errorDiv.style.display = 'block';
-        return;
-      }
-      
-      showLoading();
-      errorDiv.style.display = 'none';
-      
-      try {
-        if (window.isSignUp) {
-          await createUserWithEmailAndPassword(auth, email, password);
-        } else {
-          await signInWithEmailAndPassword(auth, email, password);
-        }
-      } catch (error) {
-        hideLoading();
-        let message = 'An error occurred. Please try again.';
-        
-        if (error.code === 'auth/email-already-in-use') {
-          message = 'This email is already registered. Try signing in instead.';
-        } else if (error.code === 'auth/invalid-email') {
-          message = 'Invalid email address.';
-        } else if (error.code === 'auth/user-not-found') {
-          message = 'No account found with this email.';
-        } else if (error.code === 'auth/wrong-password') {
-          message = 'Incorrect password.';
-        } else if (error.code === 'auth/invalid-credential') {
-          message = 'Invalid email or password.';
-        }
-        
-        errorDiv.textContent = message;
-        errorDiv.style.display = 'block';
-      }
-    };
-
-    // Handle logout
-    window.handleLogout = async function() {
-      if (confirm('Are you sure you want to log out?')) {
-        showLoading();
-        await signOut(auth);
-        hideLoading();
-      }
-    };
-
-    // Show setup modal
-    window.showSetup = function() {
-      document.getElementById('setupModal').style.display = 'flex';
-    };
-
-    // Complete setup
-    window.completeSetup = async function() {
+    window.completeSetup = function() {
       const name = document.getElementById('setupName').value.trim();
       const goal = parseFloat(document.getElementById('setupGoal').value) || 50000;
-      
       window.settings.name = name;
       window.settings.profitGoal = goal;
-      
-      showLoading();
-      const userId = window.currentUser.uid;
-      await set(ref(database, `users/${userId}/settings`), window.settings);
-      
+      saveData();
       document.getElementById('setupModal').style.display = 'none';
       updateHeader();
       updateDashboard();
-      hideLoading();
     };
 
-    // Update header
     window.updateHeader = function() {
       const goalText = window.settings.name 
         ? `${window.settings.name}'s path to $${window.settings.profitGoal.toLocaleString()}`
@@ -1050,117 +913,85 @@
       document.getElementById('headerGoal').textContent = goalText;
     };
 
-    // Switch tabs
     window.switchTab = function(tabName) {
-      document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
-      });
-      document.querySelectorAll('.nav-item').forEach(nav => {
-        nav.classList.remove('active');
-      });
-      
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
       document.getElementById(tabName).classList.add('active');
-      event.currentTarget.classList.add('active');
+      const navItem = document.querySelector(`.nav-item[data-tab="${tabName}"]`);
+      if (navItem) navItem.classList.add('active');
     };
 
-    // Add sale
-    window.addSale = async function() {
+    window.addSale = function() {
       const platform = document.getElementById('salePlatform').value;
       const item = document.getElementById('saleItem').value;
+      const saleDate = document.getElementById('saleDate').value;
       const price = parseFloat(document.getElementById('salePrice').value) || 0;
       const cost = parseFloat(document.getElementById('saleCost').value) || 0;
       const fees = parseFloat(document.getElementById('saleFees').value) || 0;
       const shipping = parseFloat(document.getElementById('saleShipping').value) || 0;
       const notes = document.getElementById('saleNotes').value;
-      
-      if (!item || price === 0) {
-        alert('Please fill in item description and sale price');
-        return;
-      }
-      
+
+      if (!item || price === 0) { alert('Please fill in item description and sale price'); return; }
+
       const netProfit = price - cost - fees - shipping;
-      
-      const sale = {
-        date: new Date().toISOString(),
-        platform,
-        item,
-        price,
-        cost,
-        fees,
-        shipping,
-        netProfit,
-        notes
-      };
-      
-      showLoading();
-      const userId = window.currentUser.uid;
-      await push(ref(database, `users/${userId}/sales`), sale);
-      
-      // Clear form
+      const date = saleDate ? new Date(saleDate + 'T12:00:00').toISOString() : new Date().toISOString();
+
+      window.sales.push({ id: generateId(), date, platform, item, price, cost, fees, shipping, netProfit, notes });
+      saveData();
+
       document.getElementById('saleItem').value = '';
       document.getElementById('salePrice').value = '';
       document.getElementById('saleCost').value = '';
       document.getElementById('saleFees').value = '';
       document.getElementById('saleShipping').value = '';
       document.getElementById('saleNotes').value = '';
-      
-      hideLoading();
+      document.getElementById('saleDate').value = new Date().toISOString().split('T')[0];
+
+      updateDashboard();
+      renderSalesHistory();
       alert('✅ Sale added successfully!');
       switchTab('dashboard');
     };
 
-    // Add purchase
-    window.addPurchase = async function() {
+    window.addPurchase = function() {
       const source = document.getElementById('purchaseSource').value;
+      const purchaseDate = document.getElementById('purchaseDate').value;
       const cost = parseFloat(document.getElementById('purchaseCost').value) || 0;
       const items = parseInt(document.getElementById('purchaseItems').value) || 0;
       const notes = document.getElementById('purchaseNotes').value;
-      
-      if (cost === 0) {
-        alert('Please enter total cost');
-        return;
-      }
-      
-      const purchase = {
-        date: new Date().toISOString(),
-        source,
-        cost,
-        items,
-        notes
-      };
-      
-      showLoading();
-      const userId = window.currentUser.uid;
-      await push(ref(database, `users/${userId}/purchases`), purchase);
-      
-      // Clear form
+
+      if (cost === 0) { alert('Please enter total cost'); return; }
+
+      const date = purchaseDate ? new Date(purchaseDate + 'T12:00:00').toISOString() : new Date().toISOString();
+
+      window.purchases.push({ id: generateId(), date, source, cost, items, notes });
+      saveData();
+
       document.getElementById('purchaseCost').value = '';
       document.getElementById('purchaseItems').value = '';
       document.getElementById('purchaseNotes').value = '';
-      
-      hideLoading();
+      document.getElementById('purchaseDate').value = new Date().toISOString().split('T')[0];
+
+      updateDashboard();
+      renderPurchasesHistory();
       alert('✅ Purchase added successfully!');
       switchTab('dashboard');
     };
 
-    // Delete sale
-    window.deleteSale = async function(id) {
+    window.deleteSale = function(id) {
       if (!confirm('Delete this sale?')) return;
-      
-      showLoading();
-      const userId = window.currentUser.uid;
-      await remove(ref(database, `users/${userId}/sales/${id}`));
-      hideLoading();
+      window.sales = window.sales.filter(s => s.id !== id);
+      saveData();
+      updateDashboard();
+      renderSalesHistory();
     };
 
-    // Delete purchase
-    window.deletePurchase = async function(id) {
+    window.deletePurchase = function(id) {
       if (!confirm('Delete this purchase?')) return;
-      
-      showLoading();
-      const userId = window.currentUser.uid;
-      await remove(ref(database, `users/${userId}/purchases/${id}`));
-      hideLoading();
+      window.purchases = window.purchases.filter(p => p.id !== id);
+      saveData();
+      updateDashboard();
+      renderPurchasesHistory();
     };
 
     // Update dashboard
@@ -1275,6 +1106,39 @@
       }).join('');
     };
 
+    // Proper CSV parser that handles quoted fields
+    function parseCsvLine(line) {
+      const result = [];
+      let current = '';
+      let inQuotes = false;
+      
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        
+        if (inQuotes) {
+          if (char === '"' && line[i + 1] === '"') {
+            current += '"';
+            i++; // skip next quote
+          } else if (char === '"') {
+            inQuotes = false;
+          } else {
+            current += char;
+          }
+        } else {
+          if (char === '"') {
+            inQuotes = true;
+          } else if (char === ',') {
+            result.push(current.trim());
+            current = '';
+          } else {
+            current += char;
+          }
+        }
+      }
+      result.push(current.trim());
+      return result;
+    }
+
     // Import sales CSV
     window.importSalesCsv = async function() {
       const input = document.getElementById('salesCsvInput');
@@ -1296,12 +1160,11 @@
         }
         
         showLoading();
-        const headers = lines[0].split(',').map(h => h.trim());
+        const headers = parseCsvLine(lines[0]);
         let imported = 0;
-        const userId = window.currentUser.uid;
         
         for (let i = 1; i < lines.length; i++) {
-          const values = lines[i].split(',').map(v => v.trim());
+          const values = parseCsvLine(lines[i]);
           
           const row = {};
           headers.forEach((header, idx) => {
@@ -1315,30 +1178,26 @@
           const fees = parseFloat(row.Fees || row.fees || row['Total selling costs'] || 0);
           const shipping = parseFloat(row.Shipping || row.shipping || row['Shipping Cost'] || 0);
           const notes = row.Notes || row.notes || '';
+          const rawDate = row.Date || row.date || row['Sale Date'] || row['Transaction date'] || '';
+          const date = rawDate ? new Date(rawDate).toISOString() : new Date().toISOString();
           
           if (item && price > 0) {
             const netProfit = price - cost - fees - shipping;
             
-            const sale = {
-              date: new Date().toISOString(),
-              platform,
-              item,
-              price,
-              cost,
-              fees,
-              shipping,
-              netProfit,
-              notes
-            };
-            
-            await push(ref(database, `users/${userId}/sales`), sale);
+            window.sales.push({
+              id: generateId(),
+              date, platform, item, price, cost, fees, shipping, netProfit, notes
+            });
             imported++;
           }
         }
         
+        if (imported > 0) saveData();
         hideLoading();
         
         if (imported > 0) {
+          updateDashboard();
+          renderSalesHistory();
           alert(`✅ Successfully imported ${imported} sales!`);
           input.value = '';
         } else {
@@ -1370,12 +1229,11 @@
         }
         
         showLoading();
-        const headers = lines[0].split(',').map(h => h.trim());
+        const headers = parseCsvLine(lines[0]);
         let imported = 0;
-        const userId = window.currentUser.uid;
         
         for (let i = 1; i < lines.length; i++) {
-          const values = lines[i].split(',').map(v => v.trim());
+          const values = parseCsvLine(lines[i]);
           
           const row = {};
           headers.forEach((header, idx) => {
@@ -1386,24 +1244,24 @@
           const cost = parseFloat(row.Cost || row.cost || row['Total Cost'] || 0);
           const items = parseInt(row.Items || row.items || row['Number of Items'] || 0);
           const notes = row.Notes || row.notes || row.Description || '';
+          const rawDate = row.Date || row.date || row['Purchase Date'] || '';
           
           if (cost > 0) {
-            const purchase = {
-              date: new Date().toISOString(),
-              source,
-              cost,
-              items,
-              notes
-            };
-            
-            await push(ref(database, `users/${userId}/purchases`), purchase);
+            window.purchases.push({
+              id: generateId(),
+              date: rawDate ? new Date(rawDate).toISOString() : new Date().toISOString(),
+              source, cost, items, notes
+            });
             imported++;
           }
         }
         
+        if (imported > 0) saveData();
         hideLoading();
         
         if (imported > 0) {
+          updateDashboard();
+          renderPurchasesHistory();
           alert(`✅ Successfully imported ${imported} purchases!`);
           input.value = '';
         } else {
