@@ -2,41 +2,47 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Card Tracker Pro</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Archivo:wght@400;600;700&display=swap');
-    
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Archivo:wght@400;500;600;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
     :root {
       --primary: #FF6B35;
+      --primary-light: rgba(255,107,53,0.1);
       --secondary: #004E89;
       --accent: #F7B801;
       --dark: #1A1A2E;
-      --light: #F8F9FA;
+      --light: #F5F6FA;
       --success: #00D9A3;
       --danger: #FF4757;
       --card-bg: #FFFFFF;
-      --shadow: 0 4px 20px rgba(0,0,0,0.08);
-      --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+      --border: #E8EAF0;
+      --text-muted: #8B8FA3;
+      --shadow: 0 2px 12px rgba(0,0,0,0.06);
+      --shadow-lg: 0 8px 30px rgba(0,0,0,0.10);
+      --radius: 14px;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
-    
+
     body {
       font-family: 'Archivo', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: var(--light);
       min-height: 100vh;
+      min-height: 100dvh;
       color: var(--dark);
-      padding-bottom: 80px;
+      padding-bottom: calc(72px + var(--safe-bottom));
+      overflow-x: hidden;
     }
-    
+
+    /* ===== HEADER ===== */
     .header {
       background: var(--card-bg);
-      padding: 20px;
+      padding: 14px 16px;
       box-shadow: var(--shadow);
       position: sticky;
       top: 0;
@@ -45,616 +51,671 @@
       justify-content: space-between;
       align-items: center;
     }
-    
-    .header-left h1 {
+    .header h1 {
       font-family: 'Bebas Neue', cursive;
-      font-size: 32px;
+      font-size: 26px;
       color: var(--primary);
       letter-spacing: 2px;
-      text-transform: uppercase;
     }
-    
-    .header-left p {
-      color: #666;
-      font-size: 14px;
-      margin-top: 4px;
-    }
-    
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    
-    .user-email {
-      font-size: 13px;
-      color: #666;
-      display: none;
-    }
-    
-    .logout-btn {
-      background: var(--danger);
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 8px;
+    .header-sub {
+      color: var(--text-muted);
       font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      display: none;
+      font-weight: 500;
     }
-    
+
+    /* ===== CONTAINER ===== */
     .container {
       max-width: 600px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 16px;
     }
-    
-    .auth-container {
-      max-width: 450px;
-      margin: 60px auto;
-      padding: 20px;
-    }
-    
-    .auth-card {
-      background: var(--card-bg);
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: var(--shadow-lg);
-    }
-    
-    .auth-title {
-      font-family: 'Bebas Neue', cursive;
-      font-size: 36px;
-      color: var(--primary);
-      margin-bottom: 10px;
-      letter-spacing: 2px;
-      text-align: center;
-    }
-    
-    .auth-subtitle {
-      text-align: center;
-      color: #666;
-      margin-bottom: 30px;
-      font-size: 15px;
-    }
-    
-    .auth-toggle {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 14px;
-      color: #666;
-    }
-    
-    .auth-toggle a {
-      color: var(--primary);
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-    }
-    
-    .auth-toggle a:hover {
-      text-decoration: underline;
-    }
-    
-    .error-message {
-      background: #FFE5E5;
-      border: 2px solid var(--danger);
-      color: #C00;
-      padding: 12px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      font-size: 14px;
-      display: none;
-    }
-    
-    .tab-content {
-      display: none;
-      animation: fadeIn 0.3s ease;
-    }
-    
-    .tab-content.active {
-      display: block;
-    }
-    
+
+    /* ===== TAB CONTENT ===== */
+    .tab-content { display: none; animation: fadeIn 0.25s ease; }
+    .tab-content.active { display: block; }
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
+      from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    
-    .stat-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-      margin-bottom: 25px;
-    }
-    
-    .stat-card {
-      background: var(--card-bg);
+
+    /* ===== GOAL CARD ===== */
+    .goal-card {
+      background: linear-gradient(135deg, #1A1A2E 0%, #2D2B55 100%);
       padding: 20px;
-      border-radius: 16px;
-      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      color: white;
+      margin-bottom: 16px;
       position: relative;
       overflow: hidden;
     }
-    
-    .stat-card::before {
+    .goal-card::after {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 4px;
-      height: 100%;
+      top: -30px;
+      right: -30px;
+      width: 120px;
+      height: 120px;
       background: var(--primary);
+      border-radius: 50%;
+      opacity: 0.15;
     }
-    
-    .stat-card.secondary::before {
-      background: var(--secondary);
-    }
-    
-    .stat-card.accent::before {
-      background: var(--accent);
-    }
-    
-    .stat-card.success::before {
-      background: var(--success);
-    }
-    
-    .stat-label {
-      font-size: 12px;
-      text-transform: uppercase;
-      font-weight: 600;
-      color: #888;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-    }
-    
-    .stat-value {
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--dark);
-      font-family: 'Bebas Neue', cursive;
-      letter-spacing: 1px;
-    }
-    
-    .goal-card {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-      padding: 25px;
-      border-radius: 20px;
-      color: white;
-      box-shadow: var(--shadow-lg);
-      margin-bottom: 25px;
-    }
-    
     .goal-amount {
-      font-size: 48px;
-      font-weight: 700;
+      font-size: 42px;
       font-family: 'Bebas Neue', cursive;
       letter-spacing: 2px;
-      margin-bottom: 10px;
+      line-height: 1;
+      margin-bottom: 4px;
     }
-    
-    .goal-label {
-      font-size: 14px;
-      opacity: 0.9;
-      margin-bottom: 15px;
-    }
-    
+    .goal-label { font-size: 13px; opacity: 0.7; margin-bottom: 14px; }
     .progress-bar {
-      background: rgba(255,255,255,0.2);
-      height: 12px;
+      background: rgba(255,255,255,0.15);
+      height: 8px;
       border-radius: 10px;
       overflow: hidden;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
     }
-    
     .progress-fill {
-      background: var(--accent);
+      background: linear-gradient(90deg, var(--primary), var(--accent));
       height: 100%;
       border-radius: 10px;
       transition: width 0.5s ease;
-      box-shadow: 0 0 20px rgba(247,184,1,0.5);
     }
-    
-    .progress-text {
-      font-size: 14px;
-      opacity: 0.9;
+    .progress-text { font-size: 12px; opacity: 0.6; }
+
+    /* ===== STAT GRID ===== */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
     }
-    
-    .form-card {
+    .stat-card {
       background: var(--card-bg);
-      padding: 25px;
-      border-radius: 20px;
-      box-shadow: var(--shadow);
-    }
-    
-    .form-group {
-      margin-bottom: 20px;
-    }
-    
-    .form-label {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: #555;
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    
-    .form-input, .form-select, .form-textarea {
-      width: 100%;
       padding: 14px 16px;
-      border: 2px solid #E5E5E5;
-      border-radius: 12px;
-      font-size: 16px;
-      font-family: 'Archivo', sans-serif;
-      transition: all 0.3s ease;
-      background: var(--light);
-    }
-    
-    .form-input:focus, .form-select:focus, .form-textarea:focus {
-      outline: none;
-      border-color: var(--primary);
-      background: white;
-    }
-    
-    .form-textarea {
-      resize: vertical;
-      min-height: 80px;
-    }
-    
-    .btn {
-      width: 100%;
-      padding: 16px;
-      border: none;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-family: 'Archivo', sans-serif;
-    }
-    
-    .btn-primary {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-      color: white;
-      box-shadow: 0 4px 15px rgba(255,107,53,0.3);
-    }
-    
-    .btn-primary:active {
-      transform: translateY(2px);
-      box-shadow: 0 2px 10px rgba(255,107,53,0.3);
-    }
-    
-    .btn-primary:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-    
-    .history-list {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-    
-    .history-item {
-      background: var(--card-bg);
-      padding: 20px;
-      border-radius: 16px;
+      border-radius: var(--radius);
       box-shadow: var(--shadow);
-      position: relative;
-      border-left: 4px solid var(--primary);
+      border-left: 3px solid var(--primary);
     }
-    
-    .history-item.purchase {
-      border-left-color: var(--secondary);
-    }
-    
-    .history-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: start;
-      margin-bottom: 12px;
-    }
-    
-    .history-title {
+    .stat-card.s { border-left-color: var(--secondary); }
+    .stat-card.a { border-left-color: var(--accent); }
+    .stat-card.g { border-left-color: var(--success); }
+    .stat-label {
+      font-size: 10px;
+      text-transform: uppercase;
       font-weight: 600;
-      color: var(--dark);
-      font-size: 16px;
-      flex: 1;
+      color: var(--text-muted);
+      letter-spacing: 0.8px;
+      margin-bottom: 4px;
     }
-    
-    .history-amount {
+    .stat-value {
+      font-size: 24px;
       font-weight: 700;
-      font-size: 18px;
       font-family: 'Bebas Neue', cursive;
       letter-spacing: 1px;
     }
-    
-    .history-amount.positive {
-      color: var(--success);
+
+    /* ===== SEARCH & FILTERS ===== */
+    .search-bar {
+      position: relative;
+      margin-bottom: 12px;
     }
-    
-    .history-amount.negative {
-      color: var(--danger);
+    .search-bar input {
+      width: 100%;
+      padding: 12px 16px 12px 42px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 15px;
+      font-family: 'Archivo', sans-serif;
+      background: var(--card-bg);
+      transition: border-color 0.2s;
     }
-    
-    .history-details {
+    .search-bar input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    .search-bar .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      opacity: 0.4;
+    }
+
+    .filter-row {
       display: flex;
-      gap: 15px;
-      font-size: 13px;
-      color: #666;
-      flex-wrap: wrap;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
     }
-    
-    .history-detail {
+    .filter-row::-webkit-scrollbar { display: none; }
+    .filter-chip {
+      flex-shrink: 0;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 2px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .filter-chip.active {
+      background: var(--dark);
+      color: white;
+      border-color: var(--dark);
+    }
+    .filter-chip:active { transform: scale(0.95); }
+
+    /* ===== INVENTORY ITEMS ===== */
+    .inv-item {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 10px;
+      overflow: hidden;
+      transition: transform 0.15s;
+    }
+    .inv-item:active { transform: scale(0.985); }
+    .inv-item-inner {
+      padding: 14px 16px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .inv-thumb {
+      width: 52px;
+      height: 52px;
+      border-radius: 10px;
+      background: var(--light);
+      flex-shrink: 0;
       display: flex;
       align-items: center;
-      gap: 4px;
+      justify-content: center;
+      font-size: 24px;
+      overflow: hidden;
     }
-    
+    .inv-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .inv-info { flex: 1; min-width: 0; }
+    .inv-title {
+      font-weight: 600;
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .inv-meta {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+    }
+    .inv-amount {
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .inv-amount-value {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 20px;
+      letter-spacing: 0.5px;
+    }
+    .inv-amount-value.positive { color: var(--success); }
+    .inv-amount-value.negative { color: var(--danger); }
+    .inv-amount-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
     .badge {
       display: inline-block;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .badge-sale { background: #E8F5E9; color: #2E7D32; }
+    .badge-purchase { background: #E3F2FD; color: #1565C0; }
+    .badge-ebay { background: #FFF3E0; color: #E65100; }
+    .badge-whatnot { background: #F3E5F5; color: #6A1B9A; }
+
+    .inv-actions {
+      display: flex;
+      border-top: 1px solid var(--border);
+    }
+    .inv-action-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: none;
+      font-size: 12px;
       font-weight: 600;
+      font-family: 'Archivo', sans-serif;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .inv-action-btn:active { background: var(--light); }
+    .inv-action-btn.danger { color: var(--danger); }
+    .inv-action-btn + .inv-action-btn { border-left: 1px solid var(--border); }
+
+    .inv-count {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+
+    /* ===== FORMS ===== */
+    .form-card {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+    }
+    .form-section-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 24px;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+      color: var(--dark);
+    }
+    .form-group { margin-bottom: 16px; }
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-    
-    .badge-ebay {
-      background: #FFE0B2;
-      color: #E65100;
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-size: 16px;
+      font-family: 'Archivo', sans-serif;
+      transition: border-color 0.2s;
+      background: var(--card-bg);
+      -webkit-appearance: none;
     }
-    
-    .badge-whatnot {
-      background: #E1BEE7;
-      color: #6A1B9A;
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--primary);
     }
-    
+    .form-textarea { resize: vertical; min-height: 70px; }
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    /* ===== TYPE TOGGLE ===== */
+    .type-toggle {
+      display: flex;
+      background: var(--light);
+      border-radius: 10px;
+      padding: 3px;
+      margin-bottom: 16px;
+    }
+    .type-toggle-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Archivo', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: transparent;
+      color: var(--text-muted);
+    }
+    .type-toggle-btn.active {
+      background: var(--card-bg);
+      color: var(--dark);
+      box-shadow: var(--shadow);
+    }
+
+    /* ===== PHOTO UPLOAD ===== */
+    .photo-upload {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .photo-upload:active { border-color: var(--primary); background: var(--primary-light); }
+    .photo-upload-icon { font-size: 28px; margin-bottom: 6px; }
+    .photo-upload-text { font-size: 13px; color: var(--text-muted); font-weight: 500; }
+    .photo-upload input { display: none; }
+    .photo-preview {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .photo-preview-item {
+      width: 64px;
+      height: 64px;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+    .photo-preview-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .photo-preview-remove {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 20px;
+      height: 20px;
+      background: rgba(0,0,0,0.6);
+      border-radius: 50%;
+      border: none;
+      color: white;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Archivo', sans-serif;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary {
+      background: var(--dark);
+      color: white;
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--dark);
+      border: 2px solid var(--border);
+    }
+    .btn-sm {
+      width: auto;
+      padding: 10px 18px;
+      font-size: 13px;
+    }
+
+    /* ===== IMPORT/EXPORT SECTION ===== */
+    .action-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .action-row .btn { flex: 1; }
+
+    .import-zone {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .import-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .import-zone-text { font-size: 13px; color: var(--text-muted); }
+    .import-zone-icon { font-size: 24px; margin-bottom: 4px; }
+
+    /* ===== COLLAPSIBLE ===== */
+    .collapsible-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+    .collapsible-header h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--dark);
+    }
+    .collapsible-arrow { font-size: 12px; color: var(--text-muted); transition: transform 0.2s; }
+    .collapsible-body { display: none; }
+    .collapsible-body.open { display: block; }
+    .collapsible-arrow.open { transform: rotate(180deg); }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+    }
+    .empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.3; }
+    .empty-text { font-size: 15px; color: var(--text-muted); margin-bottom: 4px; }
+    .empty-sub { font-size: 13px; color: var(--text-muted); opacity: 0.6; }
+
+    /* ===== BOTTOM NAV ===== */
     .nav-bar {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
       background: var(--card-bg);
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+      box-shadow: 0 -2px 16px rgba(0,0,0,0.08);
       display: flex;
       justify-content: space-around;
-      padding: 12px 0;
+      padding: 8px 0 calc(8px + var(--safe-bottom));
       z-index: 100;
     }
-    
     .nav-item {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 2px;
-      padding: 6px 10px;
+      padding: 6px 20px;
       cursor: pointer;
-      transition: all 0.3s ease;
-      border-radius: 12px;
-      color: #888;
-      min-width: 0;
+      border-radius: 10px;
+      color: var(--text-muted);
+      transition: all 0.2s;
     }
-    
-    .nav-item.active {
-      color: var(--primary);
-      background: rgba(255,107,53,0.1);
-    }
-    
-    .nav-icon {
-      font-size: 20px;
-    }
-    
-    .nav-label {
-      font-size: 10px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-    }
-    
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: #888;
-    }
-    
-    .empty-icon {
-      font-size: 64px;
-      margin-bottom: 20px;
-      opacity: 0.3;
-    }
-    
-    .empty-text {
-      font-size: 16px;
-      margin-bottom: 8px;
-    }
-    
-    .empty-subtext {
-      font-size: 14px;
-      opacity: 0.7;
-    }
-    
-    .month-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 25px;
-    }
-    
-    .month-card {
-      background: var(--card-bg);
-      padding: 16px;
-      border-radius: 12px;
-      box-shadow: var(--shadow);
-      text-align: center;
-    }
-    
-    .month-name {
-      font-size: 12px;
-      font-weight: 600;
-      color: #888;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-    
-    .month-value {
-      font-size: 20px;
-      font-weight: 700;
-      font-family: 'Bebas Neue', cursive;
-      color: var(--dark);
-    }
-    
-    .delete-btn {
-      background: var(--danger);
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    
-    .row-group {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-    }
-    
+    .nav-item.active { color: var(--primary); }
+    .nav-item:active { transform: scale(0.92); }
+    .nav-icon { font-size: 22px; }
+    .nav-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+
+    /* ===== LOADING ===== */
     .loading-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.7);
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6);
       display: none;
       align-items: center;
       justify-content: center;
       z-index: 2000;
     }
-    
     .loading-spinner {
-      width: 50px;
-      height: 50px;
-      border: 4px solid rgba(255,255,255,0.3);
+      width: 40px; height: 40px;
+      border: 3px solid rgba(255,255,255,0.2);
       border-top-color: white;
       border-radius: 50%;
-      animation: spin 1s linear infinite;
+      animation: spin 0.7s linear infinite;
     }
-    
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ===== TOAST ===== */
+    .toast {
+      position: fixed;
+      bottom: calc(84px + var(--safe-bottom));
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--dark);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 1500;
+      transition: transform 0.3s ease;
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ===== LIGHTBOX ===== */
+    .lightbox {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 3000;
+      padding: 20px;
+    }
+    .lightbox.show { display: flex; }
+    .lightbox img {
+      max-width: 100%;
+      max-height: 90vh;
+      border-radius: 8px;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <!-- LOADING OVERLAY -->
-  <div id="loadingOverlay" class="loading-overlay">
-    <div class="loading-spinner"></div>
+
+  <!-- LOADING -->
+  <div id="loadingOverlay" class="loading-overlay"><div class="loading-spinner"></div></div>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast"></div>
+
+  <!-- LIGHTBOX -->
+  <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    <img id="lightboxImg" src="" alt="">
   </div>
 
-  <!-- AUTH SCREEN -->
-  <div id="authScreen" style="display: none;">
-    <div class="auth-container">
-      <div class="auth-card">
-        <div class="auth-title">📊 Card Tracker Pro</div>
-        <div class="auth-subtitle" id="authSubtitle">Sign in to track your sports card business</div>
-        
-        <div id="errorMessage" class="error-message"></div>
-        
-        <div class="form-group">
-          <label class="form-label">Email</label>
-          <input type="email" class="form-input" id="authEmail" placeholder="your@email.com">
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">Password</label>
-          <input type="password" class="form-input" id="authPassword" placeholder="••••••••">
-        </div>
-        
-        <button class="btn btn-primary" id="authButton" onclick="handleAuth()">Sign In</button>
-        
-        <div class="auth-toggle">
-          <span id="authToggleText">Don't have an account?</span>
-          <a onclick="toggleAuthMode()">Sign Up</a>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- AUTH (hidden for now) -->
+  <div id="authScreen" style="display: none;"></div>
 
   <!-- MAIN APP -->
-  <div id="mainApp" style="display: none;">
+  <div id="mainApp">
     <div class="header">
-      <div class="header-left">
+      <div>
         <h1>📊 Card Tracker Pro</h1>
-        <p id="headerGoal">Track your progress</p>
-      </div>
-      <div class="header-right">
-        <span class="user-email" id="userEmail"></span>
-        <button class="logout-btn" onclick="handleLogout()">Logout</button>
+        <div class="header-sub" id="headerGoal">Track your card business</div>
       </div>
     </div>
 
     <div class="container">
-      <!-- DASHBOARD TAB -->
+
+      <!-- ===== DASHBOARD TAB ===== -->
       <div id="dashboard" class="tab-content active">
         <div class="goal-card">
           <div class="goal-amount" id="ytdProfit">$0</div>
           <div class="goal-label">Year-to-Date Profit</div>
-          <div class="progress-bar">
-            <div class="progress-fill" id="progressBar" style="width: 0%"></div>
-          </div>
-          <div class="progress-text"><span id="progressPercent">0</span>% to <span id="goalDisplay">Goal</span></div>
+          <div class="progress-bar"><div class="progress-fill" id="progressBar" style="width:0%"></div></div>
+          <div class="progress-text"><span id="progressPercent">0</span>% to <span id="goalDisplay">$50,000 Goal</span></div>
         </div>
-        
+
         <div class="stat-grid">
           <div class="stat-card">
             <div class="stat-label">Total Sales</div>
             <div class="stat-value" id="totalSales">$0</div>
           </div>
-          <div class="stat-card secondary">
+          <div class="stat-card s">
             <div class="stat-label">Items Sold</div>
             <div class="stat-value" id="itemsSold">0</div>
           </div>
-          <div class="stat-card accent">
+          <div class="stat-card a">
             <div class="stat-label">Avg Margin</div>
             <div class="stat-value" id="avgMargin">0%</div>
           </div>
-          <div class="stat-card success">
+          <div class="stat-card g">
             <div class="stat-label">This Month</div>
             <div class="stat-value" id="monthProfit">$0</div>
           </div>
         </div>
-        
+
         <div class="stat-grid">
           <div class="stat-card">
-            <div class="stat-label">eBay</div>
+            <div class="stat-label">eBay Revenue</div>
             <div class="stat-value" id="ebayTotal">$0</div>
           </div>
-          <div class="stat-card secondary">
-            <div class="stat-label">Whatnot</div>
+          <div class="stat-card s">
+            <div class="stat-label">Whatnot Revenue</div>
             <div class="stat-value" id="whatnotTotal">$0</div>
           </div>
         </div>
       </div>
 
-      <!-- ADD SALE TAB -->
-      <div id="addSale" class="tab-content">
-        <div class="form-card">
-          <h2 style="margin-bottom: 20px; color: var(--primary); font-family: 'Bebas Neue', cursive; font-size: 28px; letter-spacing: 1px;">Add Sale</h2>
-          
+      <!-- ===== INVENTORY TAB ===== -->
+      <div id="inventory" class="tab-content">
+        <div class="search-bar">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="invSearch" placeholder="Search cards, sources..." oninput="renderInventory()">
+        </div>
+
+        <div class="filter-row" id="filterRow">
+          <div class="filter-chip active" data-filter="all" onclick="setFilter('all')">All</div>
+          <div class="filter-chip" data-filter="sale" onclick="setFilter('sale')">Sales</div>
+          <div class="filter-chip" data-filter="purchase" onclick="setFilter('purchase')">Purchases</div>
+          <div class="filter-chip" data-filter="ebay" onclick="setFilter('ebay')">eBay</div>
+          <div class="filter-chip" data-filter="whatnot" onclick="setFilter('whatnot')">Whatnot</div>
+          <div class="filter-chip" data-filter="profit" onclick="setFilter('profit')">Profitable</div>
+          <div class="filter-chip" data-filter="loss" onclick="setFilter('loss')">At a Loss</div>
+        </div>
+
+        <div class="inv-count" id="invCount">0 items</div>
+        <div id="inventoryList"></div>
+      </div>
+
+      <!-- ===== ADD TAB ===== -->
+      <div id="addTab" class="tab-content">
+
+        <!-- Type toggle -->
+        <div class="type-toggle">
+          <button class="type-toggle-btn active" id="toggleSale" onclick="setAddType('sale')">💰 Add Sale</button>
+          <button class="type-toggle-btn" id="togglePurchase" onclick="setAddType('purchase')">🛒 Add Purchase</button>
+        </div>
+
+        <!-- SALE FORM -->
+        <div id="saleForm" class="form-card">
           <div class="form-group">
             <label class="form-label">Platform</label>
             <select class="form-select" id="salePlatform">
@@ -662,55 +723,55 @@
               <option value="Whatnot">Whatnot</option>
             </select>
           </div>
-          
           <div class="form-group">
             <label class="form-label">Sale Date</label>
             <input type="date" class="form-input" id="saleDate">
           </div>
-          
           <div class="form-group">
             <label class="form-label">Item Description</label>
-            <input type="text" class="form-input" id="saleItem" placeholder="e.g., 2023 Panini Prizm Jordan Rookie PSA 10">
+            <input type="text" class="form-input" id="saleItem" placeholder="e.g., 2024 Topps Chrome Rookie PSA 10">
           </div>
-          
-          <div class="row-group">
+          <div class="row-2">
             <div class="form-group">
               <label class="form-label">Sale Price</label>
-              <input type="number" class="form-input" id="salePrice" placeholder="0.00" step="0.01">
+              <input type="number" class="form-input" id="salePrice" placeholder="0.00" step="0.01" inputmode="decimal">
             </div>
-            
             <div class="form-group">
               <label class="form-label">Cost Paid</label>
-              <input type="number" class="form-input" id="saleCost" placeholder="0.00" step="0.01">
+              <input type="number" class="form-input" id="saleCost" placeholder="0.00" step="0.01" inputmode="decimal">
             </div>
           </div>
-          
-          <div class="row-group">
+          <div class="row-2">
             <div class="form-group">
               <label class="form-label">Fees</label>
-              <input type="number" class="form-input" id="saleFees" placeholder="0.00" step="0.01">
+              <input type="number" class="form-input" id="saleFees" placeholder="0.00" step="0.01" inputmode="decimal">
             </div>
-            
             <div class="form-group">
               <label class="form-label">Shipping Cost</label>
-              <input type="number" class="form-input" id="saleShipping" placeholder="0.00" step="0.01">
+              <input type="number" class="form-input" id="saleShipping" placeholder="0.00" step="0.01" inputmode="decimal">
             </div>
           </div>
-          
+
+          <!-- Photo upload -->
+          <div class="form-group">
+            <label class="form-label">Photo (Optional)</label>
+            <div class="photo-upload" onclick="document.getElementById('salePhoto').click()">
+              <div class="photo-upload-icon">📷</div>
+              <div class="photo-upload-text">Tap to add photo or take picture</div>
+              <input type="file" id="salePhoto" accept="image/*" capture="environment" onchange="handlePhotoSelect(this, 'salePhotoPreview')">
+            </div>
+            <div class="photo-preview" id="salePhotoPreview"></div>
+          </div>
+
           <div class="form-group">
             <label class="form-label">Notes (Optional)</label>
             <textarea class="form-textarea" id="saleNotes" placeholder="Additional details..."></textarea>
           </div>
-          
-          <button class="btn btn-primary" onclick="addSale()">💰 Add Sale</button>
+          <button class="btn btn-primary" onclick="addSale()">Add Sale</button>
         </div>
-      </div>
 
-      <!-- ADD PURCHASE TAB -->
-      <div id="addPurchase" class="tab-content">
-        <div class="form-card">
-          <h2 style="margin-bottom: 20px; color: var(--secondary); font-family: 'Bebas Neue', cursive; font-size: 28px; letter-spacing: 1px;">Add Purchase</h2>
-          
+        <!-- PURCHASE FORM -->
+        <div id="purchaseForm" class="form-card" style="display:none;">
           <div class="form-group">
             <label class="form-label">Source</label>
             <select class="form-select" id="purchaseSource">
@@ -723,518 +784,572 @@
               <option value="Other">Other</option>
             </select>
           </div>
-
           <div class="form-group">
             <label class="form-label">Purchase Date</label>
             <input type="date" class="form-input" id="purchaseDate">
           </div>
-          
-          <div class="row-group">
+          <div class="row-2">
             <div class="form-group">
               <label class="form-label">Total Cost</label>
-              <input type="number" class="form-input" id="purchaseCost" placeholder="0.00" step="0.01">
+              <input type="number" class="form-input" id="purchaseCost" placeholder="0.00" step="0.01" inputmode="decimal">
             </div>
-            
             <div class="form-group">
               <label class="form-label"># of Items</label>
-              <input type="number" class="form-input" id="purchaseItems" placeholder="0">
+              <input type="number" class="form-input" id="purchaseItems" placeholder="0" inputmode="numeric">
             </div>
           </div>
-          
+
+          <!-- Photo upload -->
+          <div class="form-group">
+            <label class="form-label">Photo (Optional)</label>
+            <div class="photo-upload" onclick="document.getElementById('purchasePhoto').click()">
+              <div class="photo-upload-icon">📷</div>
+              <div class="photo-upload-text">Tap to add photo or take picture</div>
+              <input type="file" id="purchasePhoto" accept="image/*" capture="environment" onchange="handlePhotoSelect(this, 'purchasePhotoPreview')">
+            </div>
+            <div class="photo-preview" id="purchasePhotoPreview"></div>
+          </div>
+
           <div class="form-group">
             <label class="form-label">Description</label>
             <textarea class="form-textarea" id="purchaseNotes" placeholder="What did you buy?"></textarea>
           </div>
-          
-          <button class="btn btn-primary" onclick="addPurchase()">🛒 Add Purchase</button>
-        </div>
-      </div>
-
-      <!-- BULK IMPORT TAB -->
-      <div id="bulkImport" class="tab-content">
-        <h2 style="margin-bottom: 20px; color: var(--accent); font-family: 'Bebas Neue', cursive; font-size: 28px; letter-spacing: 1px;">Bulk Import</h2>
-        
-        <div class="form-card" style="margin-bottom: 20px;">
-          <h3 style="margin-bottom: 15px; color: var(--primary); font-size: 20px;">Import Sales from CSV</h3>
-          <p style="font-size: 14px; color: #666; margin-bottom: 15px;">
-            CSV should have columns: Platform, Item, Price, Cost, Fees, Shipping, Notes
-          </p>
-          <input type="file" id="salesCsvInput" accept=".csv" style="margin-bottom: 15px; padding: 10px; width: 100%; border: 2px dashed #ccc; border-radius: 8px;">
-          <button class="btn btn-primary" onclick="importSalesCsv()">📥 Import Sales</button>
+          <button class="btn btn-primary" onclick="addPurchase()">Add Purchase</button>
         </div>
 
+        <!-- IMPORT / EXPORT -->
         <div class="form-card">
-          <h3 style="margin-bottom: 15px; color: var(--secondary); font-size: 20px;">Import Purchases from CSV</h3>
-          <p style="font-size: 14px; color: #666; margin-bottom: 15px;">
-            CSV should have columns: Source, Cost, Items, Notes
-          </p>
-          <input type="file" id="purchasesCsvInput" accept=".csv" style="margin-bottom: 15px; padding: 10px; width: 100%; border: 2px dashed #ccc; border-radius: 8px;">
-          <button class="btn btn-primary" onclick="importPurchasesCsv()">📥 Import Purchases</button>
+          <div class="collapsible-header" onclick="toggleCollapsible('importExport')">
+            <h3>📦 Import & Export</h3>
+            <span class="collapsible-arrow" id="importExportArrow">▼</span>
+          </div>
+          <div class="collapsible-body" id="importExportBody">
+            <div class="action-row">
+              <button class="btn btn-outline btn-sm" onclick="exportInventory()">📤 Export CSV</button>
+            </div>
+
+            <p style="font-size:12px; color:var(--text-muted); margin-bottom:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Import Sales CSV</p>
+            <div class="import-zone" style="margin-bottom:16px;">
+              <div class="import-zone-icon">📥</div>
+              <div class="import-zone-text">Tap to select CSV file</div>
+              <input type="file" id="salesCsvInput" accept=".csv" onchange="importSalesCsv()">
+            </div>
+
+            <p style="font-size:12px; color:var(--text-muted); margin-bottom:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Import Purchases CSV</p>
+            <div class="import-zone" style="margin-bottom:16px;">
+              <div class="import-zone-icon">📥</div>
+              <div class="import-zone-text">Tap to select CSV file</div>
+              <input type="file" id="purchasesCsvInput" accept=".csv" onchange="importPurchasesCsv()">
+            </div>
+
+            <div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 10px; padding: 12px; font-size: 12px; color: #92400E; line-height: 1.6;">
+              <strong>CSV Tips:</strong> First row = headers. Sales columns: Platform, Item, Price, Cost, Fees, Shipping, Date, Notes. Purchase columns: Source, Cost, Items, Date, Notes. No dollar signs in numbers.
+            </div>
+          </div>
         </div>
-
-        <div class="form-card" style="margin-top: 20px; background: #FFF3CD; border: 2px solid #FFC107;">
-          <h4 style="margin-bottom: 10px; color: #856404;">💡 CSV Format Tips</h4>
-          <ul style="font-size: 13px; color: #856404; line-height: 1.8; margin-left: 20px;">
-            <li>First row should be column headers</li>
-            <li>Make sure column names match exactly (case-sensitive)</li>
-            <li>Numbers should not have dollar signs or commas</li>
-            <li>Dates will auto-populate to today's date</li>
-            <li>You can download your eBay sales report and import it!</li>
-          </ul>
-        </div>
       </div>
 
-      <!-- SALES HISTORY TAB -->
-      <div id="salesHistory" class="tab-content">
-        <h2 style="margin-bottom: 20px; color: var(--primary); font-family: 'Bebas Neue', cursive; font-size: 28px; letter-spacing: 1px;">Sales History</h2>
-        <div id="salesList" class="history-list"></div>
-      </div>
-
-      <!-- PURCHASES HISTORY TAB -->
-      <div id="purchasesHistory" class="tab-content">
-        <h2 style="margin-bottom: 20px; color: var(--secondary); font-family: 'Bebas Neue', cursive; font-size: 28px; letter-spacing: 1px;">Purchase History</h2>
-        <div id="purchasesList" class="history-list"></div>
-      </div>
     </div>
 
+    <!-- BOTTOM NAV -->
     <nav class="nav-bar">
       <div class="nav-item active" data-tab="dashboard" onclick="switchTab('dashboard')">
         <div class="nav-icon">📊</div>
         <div class="nav-label">Dashboard</div>
       </div>
-      <div class="nav-item" data-tab="addSale" onclick="switchTab('addSale')">
-        <div class="nav-icon">💰</div>
-        <div class="nav-label">Add Sale</div>
+      <div class="nav-item" data-tab="inventory" onclick="switchTab('inventory')">
+        <div class="nav-icon">🗂️</div>
+        <div class="nav-label">Inventory</div>
       </div>
-      <div class="nav-item" data-tab="addPurchase" onclick="switchTab('addPurchase')">
-        <div class="nav-icon">🛒</div>
-        <div class="nav-label">Purchase</div>
-      </div>
-      <div class="nav-item" data-tab="bulkImport" onclick="switchTab('bulkImport')">
-        <div class="nav-icon">📤</div>
-        <div class="nav-label">Import</div>
-      </div>
-      <div class="nav-item" data-tab="salesHistory" onclick="switchTab('salesHistory')">
-        <div class="nav-icon">📋</div>
-        <div class="nav-label">Sales</div>
-      </div>
-      <div class="nav-item" data-tab="purchasesHistory" onclick="switchTab('purchasesHistory')">
-        <div class="nav-icon">🧾</div>
-        <div class="nav-label">Buys</div>
+      <div class="nav-item" data-tab="addTab" onclick="switchTab('addTab')">
+        <div class="nav-icon">➕</div>
+        <div class="nav-label">Add</div>
       </div>
     </nav>
   </div>
 
   <script>
+    // ===== STATE =====
+    let sales = [];
+    let purchases = [];
+    let settings = { name: '', profitGoal: 50000 };
+    let currentFilter = 'all';
+    let tempPhotos = { sale: [], purchase: [] };
 
-    // ===== LOCAL STORAGE VERSION (no Firebase) =====
-    window.sales = [];
-    window.purchases = [];
-    window.settings = { name: '', profitGoal: 50000 };
-
-    function generateId() {
-      return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
-    }
+    function generateId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 9); }
 
     function saveData() {
-      localStorage.setItem('ctp_sales', JSON.stringify(window.sales));
-      localStorage.setItem('ctp_purchases', JSON.stringify(window.purchases));
-      localStorage.setItem('ctp_settings', JSON.stringify(window.settings));
+      localStorage.setItem('ctp_sales', JSON.stringify(sales));
+      localStorage.setItem('ctp_purchases', JSON.stringify(purchases));
+      localStorage.setItem('ctp_settings', JSON.stringify(settings));
     }
 
     function loadData() {
       try {
-        window.sales = JSON.parse(localStorage.getItem('ctp_sales')) || [];
-        window.purchases = JSON.parse(localStorage.getItem('ctp_purchases')) || [];
+        sales = JSON.parse(localStorage.getItem('ctp_sales')) || [];
+        purchases = JSON.parse(localStorage.getItem('ctp_purchases')) || [];
         const saved = JSON.parse(localStorage.getItem('ctp_settings'));
-        if (saved) window.settings = saved;
-      } catch (e) { console.error('Error loading data:', e); }
+        if (saved) settings = saved;
+      } catch (e) { console.error('Load error:', e); }
     }
 
-    function showLoading() { document.getElementById('loadingOverlay').style.display = 'flex'; }
-    function hideLoading() { document.getElementById('loadingOverlay').style.display = 'none'; }
+    function toast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
 
-    // Boot the app
+    // ===== INIT =====
     window.addEventListener('DOMContentLoaded', function() {
-      document.getElementById('authScreen').style.display = 'none';
-      document.getElementById('mainApp').style.display = 'block';
       loadData();
-
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('saleDate').value = today;
       document.getElementById('purchaseDate').value = today;
-
       updateHeader();
       updateDashboard();
-      renderSalesHistory();
-      renderPurchasesHistory();
+      renderInventory();
     });
 
-    window.updateHeader = function() {
-      const goalText = window.settings.name 
-        ? `${window.settings.name}'s path to $${window.settings.profitGoal.toLocaleString()}`
-        : `Track your path to $${window.settings.profitGoal.toLocaleString()}`;
-      document.getElementById('headerGoal').textContent = goalText;
-    };
-
-    window.switchTab = function(tabName) {
+    // ===== NAV =====
+    function switchTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
       document.getElementById(tabName).classList.add('active');
-      const navItem = document.querySelector(`.nav-item[data-tab="${tabName}"]`);
-      if (navItem) navItem.classList.add('active');
-    };
+      const nav = document.querySelector(`.nav-item[data-tab="${tabName}"]`);
+      if (nav) nav.classList.add('active');
+      if (tabName === 'inventory') renderInventory();
+    }
 
-    window.addSale = function() {
-      const platform = document.getElementById('salePlatform').value;
-      const item = document.getElementById('saleItem').value;
-      const saleDate = document.getElementById('saleDate').value;
-      const price = parseFloat(document.getElementById('salePrice').value) || 0;
-      const cost = parseFloat(document.getElementById('saleCost').value) || 0;
-      const fees = parseFloat(document.getElementById('saleFees').value) || 0;
-      const shipping = parseFloat(document.getElementById('saleShipping').value) || 0;
-      const notes = document.getElementById('saleNotes').value;
+    // ===== ADD TYPE TOGGLE =====
+    function setAddType(type) {
+      document.getElementById('toggleSale').classList.toggle('active', type === 'sale');
+      document.getElementById('togglePurchase').classList.toggle('active', type === 'purchase');
+      document.getElementById('saleForm').style.display = type === 'sale' ? 'block' : 'none';
+      document.getElementById('purchaseForm').style.display = type === 'purchase' ? 'block' : 'none';
+    }
 
-      if (!item || price === 0) { alert('Please fill in item description and sale price'); return; }
+    // ===== COLLAPSIBLE =====
+    function toggleCollapsible(id) {
+      const body = document.getElementById(id + 'Body');
+      const arrow = document.getElementById(id + 'Arrow');
+      body.classList.toggle('open');
+      arrow.classList.toggle('open');
+    }
 
-      const netProfit = price - cost - fees - shipping;
-      const date = saleDate ? new Date(saleDate + 'T12:00:00').toISOString() : new Date().toISOString();
+    // ===== HEADER =====
+    function updateHeader() {
+      const goalText = settings.name
+        ? `${settings.name}'s path to $${settings.profitGoal.toLocaleString()}`
+        : `Track your path to $${settings.profitGoal.toLocaleString()}`;
+      document.getElementById('headerGoal').textContent = goalText;
+    }
 
-      window.sales.push({ id: generateId(), date, platform, item, price, cost, fees, shipping, netProfit, notes });
-      saveData();
+    // ===== DASHBOARD =====
+    function updateDashboard() {
+      const totalProfit = sales.reduce((s, x) => s + x.netProfit, 0);
+      const totalSalesAmt = sales.reduce((s, x) => s + x.price, 0);
+      const itemsSold = sales.length;
+      const avgMargin = totalSalesAmt > 0 ? (totalProfit / totalSalesAmt * 100) : 0;
 
-      document.getElementById('saleItem').value = '';
-      document.getElementById('salePrice').value = '';
-      document.getElementById('saleCost').value = '';
-      document.getElementById('saleFees').value = '';
-      document.getElementById('saleShipping').value = '';
-      document.getElementById('saleNotes').value = '';
-      document.getElementById('saleDate').value = new Date().toISOString().split('T')[0];
-
-      updateDashboard();
-      renderSalesHistory();
-      alert('✅ Sale added successfully!');
-      switchTab('dashboard');
-    };
-
-    window.addPurchase = function() {
-      const source = document.getElementById('purchaseSource').value;
-      const purchaseDate = document.getElementById('purchaseDate').value;
-      const cost = parseFloat(document.getElementById('purchaseCost').value) || 0;
-      const items = parseInt(document.getElementById('purchaseItems').value) || 0;
-      const notes = document.getElementById('purchaseNotes').value;
-
-      if (cost === 0) { alert('Please enter total cost'); return; }
-
-      const date = purchaseDate ? new Date(purchaseDate + 'T12:00:00').toISOString() : new Date().toISOString();
-
-      window.purchases.push({ id: generateId(), date, source, cost, items, notes });
-      saveData();
-
-      document.getElementById('purchaseCost').value = '';
-      document.getElementById('purchaseItems').value = '';
-      document.getElementById('purchaseNotes').value = '';
-      document.getElementById('purchaseDate').value = new Date().toISOString().split('T')[0];
-
-      updateDashboard();
-      renderPurchasesHistory();
-      alert('✅ Purchase added successfully!');
-      switchTab('dashboard');
-    };
-
-    window.deleteSale = function(id) {
-      if (!confirm('Delete this sale?')) return;
-      window.sales = window.sales.filter(s => s.id !== id);
-      saveData();
-      updateDashboard();
-      renderSalesHistory();
-    };
-
-    window.deletePurchase = function(id) {
-      if (!confirm('Delete this purchase?')) return;
-      window.purchases = window.purchases.filter(p => p.id !== id);
-      saveData();
-      updateDashboard();
-      renderPurchasesHistory();
-    };
-
-    // Update dashboard
-    window.updateDashboard = function() {
-      const totalProfit = window.sales.reduce((sum, s) => sum + s.netProfit, 0);
-      const totalSalesAmount = window.sales.reduce((sum, s) => sum + s.price, 0);
-      const itemsSold = window.sales.length;
-      const avgMargin = totalSalesAmount > 0 ? (totalProfit / totalSalesAmount * 100) : 0;
-      
-      // Current month profit
       const now = new Date();
-      const currentMonth = now.getMonth();
-      const currentYear = now.getFullYear();
-      const monthProfit = window.sales
-        .filter(s => {
-          const d = new Date(s.date);
-          return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
-        })
-        .reduce((sum, s) => sum + s.netProfit, 0);
-      
-      // Platform breakdown
-      const ebayTotal = window.sales.filter(s => s.platform === 'eBay').reduce((sum, s) => sum + s.price, 0);
-      const whatnotTotal = window.sales.filter(s => s.platform === 'Whatnot').reduce((sum, s) => sum + s.price, 0);
-      
+      const monthProfit = sales
+        .filter(s => { const d = new Date(s.date); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); })
+        .reduce((s, x) => s + x.netProfit, 0);
+
+      const ebayTotal = sales.filter(s => s.platform === 'eBay').reduce((s, x) => s + x.price, 0);
+      const whatnotTotal = sales.filter(s => s.platform === 'Whatnot').reduce((s, x) => s + x.price, 0);
+
       document.getElementById('ytdProfit').textContent = '$' + totalProfit.toFixed(0);
-      document.getElementById('totalSales').textContent = '$' + totalSalesAmount.toFixed(0);
+      document.getElementById('totalSales').textContent = '$' + totalSalesAmt.toFixed(0);
       document.getElementById('itemsSold').textContent = itemsSold;
       document.getElementById('avgMargin').textContent = avgMargin.toFixed(1) + '%';
       document.getElementById('monthProfit').textContent = '$' + monthProfit.toFixed(0);
       document.getElementById('ebayTotal').textContent = '$' + ebayTotal.toFixed(0);
       document.getElementById('whatnotTotal').textContent = '$' + whatnotTotal.toFixed(0);
-      
-      const progress = Math.min((totalProfit / window.settings.profitGoal) * 100, 100);
+
+      const progress = Math.min((totalProfit / settings.profitGoal) * 100, 100);
       document.getElementById('progressBar').style.width = progress + '%';
       document.getElementById('progressPercent').textContent = progress.toFixed(1);
-      
-      document.getElementById('goalDisplay').textContent = '$' + window.settings.profitGoal.toLocaleString() + ' Goal';
-    };
+      document.getElementById('goalDisplay').textContent = '$' + settings.profitGoal.toLocaleString() + ' Goal';
+    }
 
-    // Render sales history
-    window.renderSalesHistory = function() {
-      const list = document.getElementById('salesList');
-      
-      if (window.sales.length === 0) {
-        list.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-icon">💳</div>
-            <div class="empty-text">No sales yet</div>
-            <div class="empty-subtext">Add your first sale to get started!</div>
-          </div>
-        `;
+    // ===== INVENTORY FILTER & RENDER =====
+    function setFilter(f) {
+      currentFilter = f;
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.toggle('active', c.dataset.filter === f));
+      renderInventory();
+    }
+
+    function getFilteredInventory() {
+      const query = (document.getElementById('invSearch')?.value || '').toLowerCase();
+
+      // Combine into unified list
+      let items = [];
+      sales.forEach(s => items.push({ ...s, _type: 'sale', _title: s.item, _amount: s.netProfit, _date: s.date }));
+      purchases.forEach(p => items.push({ ...p, _type: 'purchase', _title: p.source + (p.notes ? ' — ' + p.notes : ''), _amount: -p.cost, _date: p.date }));
+
+      // Sort newest first
+      items.sort((a, b) => new Date(b._date) - new Date(a._date));
+
+      // Filter
+      if (currentFilter === 'sale') items = items.filter(i => i._type === 'sale');
+      else if (currentFilter === 'purchase') items = items.filter(i => i._type === 'purchase');
+      else if (currentFilter === 'ebay') items = items.filter(i => i.platform === 'eBay');
+      else if (currentFilter === 'whatnot') items = items.filter(i => i.platform === 'Whatnot');
+      else if (currentFilter === 'profit') items = items.filter(i => i._type === 'sale' && i.netProfit > 0);
+      else if (currentFilter === 'loss') items = items.filter(i => i._type === 'sale' && i.netProfit <= 0);
+
+      // Search
+      if (query) {
+        items = items.filter(i => i._title.toLowerCase().includes(query) ||
+          (i.notes || '').toLowerCase().includes(query) ||
+          (i.platform || '').toLowerCase().includes(query) ||
+          (i.source || '').toLowerCase().includes(query));
+      }
+
+      return items;
+    }
+
+    function renderInventory() {
+      const items = getFilteredInventory();
+      const list = document.getElementById('inventoryList');
+      document.getElementById('invCount').textContent = items.length + ' item' + (items.length !== 1 ? 's' : '');
+
+      if (items.length === 0) {
+        list.innerHTML = '<div class="empty-state"><div class="empty-icon">🗂️</div><div class="empty-text">No items found</div><div class="empty-sub">Add sales or purchases to see them here</div></div>';
         return;
       }
-      
-      list.innerHTML = window.sales.map(sale => {
-        const date = new Date(sale.date).toLocaleDateString();
-        const profitClass = sale.netProfit > 0 ? 'positive' : 'negative';
-        
-        return `
-          <div class="history-item">
-            <div class="history-header">
-              <div class="history-title">${sale.item}</div>
-              <div class="history-amount ${profitClass}">$${sale.netProfit.toFixed(2)}</div>
-            </div>
-            <div class="history-details">
-              <span class="badge ${sale.platform === 'eBay' ? 'badge-ebay' : 'badge-whatnot'}">${sale.platform}</span>
-              <span>${date}</span>
-              <span>Sold: $${sale.price.toFixed(2)}</span>
-              <span>Cost: $${sale.cost.toFixed(2)}</span>
-            </div>
-            ${sale.notes ? `<div style="margin-top: 10px; font-size: 13px; color: #666;">${sale.notes}</div>` : ''}
-            <button class="delete-btn" onclick="deleteSale('${sale.id}')">Delete</button>
-          </div>
-        `;
-      }).join('');
-    };
 
-    // Render purchases history
-    window.renderPurchasesHistory = function() {
-      const list = document.getElementById('purchasesList');
-      
-      if (window.purchases.length === 0) {
-        list.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-icon">🛒</div>
-            <div class="empty-text">No purchases yet</div>
-            <div class="empty-subtext">Track your inventory purchases here!</div>
+      list.innerHTML = items.map(item => {
+        const date = new Date(item._date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        const isSale = item._type === 'sale';
+        const amountClass = isSale ? (item.netProfit > 0 ? 'positive' : 'negative') : 'negative';
+        const amountStr = isSale ? (item.netProfit >= 0 ? '+$' + item.netProfit.toFixed(2) : '-$' + Math.abs(item.netProfit).toFixed(2)) : '-$' + item.cost.toFixed(2);
+        const amountLabel = isSale ? 'profit' : 'cost';
+        const typeBadge = isSale ? '<span class="badge badge-sale">Sale</span>' : '<span class="badge badge-purchase">Buy</span>';
+        const platformBadge = item.platform ? `<span class="badge ${item.platform === 'eBay' ? 'badge-ebay' : 'badge-whatnot'}">${item.platform}</span>` : '';
+        const thumbContent = item.photo ? `<img src="${item.photo}" alt="" onclick="openLightbox('${item.photo.replace(/'/g, "\\'")}')" style="cursor:pointer;">` : (isSale ? '💳' : '🛒');
+
+        return `<div class="inv-item">
+          <div class="inv-item-inner">
+            <div class="inv-thumb">${thumbContent}</div>
+            <div class="inv-info">
+              <div class="inv-title">${escapeHtml(item._title)}</div>
+              <div class="inv-meta">${typeBadge}${platformBadge}<span>${date}</span></div>
+            </div>
+            <div class="inv-amount">
+              <div class="inv-amount-value ${amountClass}">${amountStr}</div>
+              <div class="inv-amount-label">${amountLabel}</div>
+            </div>
           </div>
-        `;
-        return;
+          <div class="inv-actions">
+            <button class="inv-action-btn" onclick="editItem('${item.id}', '${item._type}')">Edit</button>
+            <button class="inv-action-btn danger" onclick="deleteItem('${item.id}', '${item._type}')">Delete</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // ===== LIGHTBOX =====
+    function openLightbox(src) {
+      document.getElementById('lightboxImg').src = src;
+      document.getElementById('lightbox').classList.add('show');
+    }
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('show');
+    }
+
+    // ===== PHOTO HANDLING =====
+    function handlePhotoSelect(input, previewId) {
+      const file = input.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        // Resize for storage
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const maxSize = 400;
+          let w = img.width, h = img.height;
+          if (w > h) { if (w > maxSize) { h *= maxSize / w; w = maxSize; } }
+          else { if (h > maxSize) { w *= maxSize / h; h = maxSize; } }
+          canvas.width = w;
+          canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+
+          const type = previewId.includes('sale') ? 'sale' : 'purchase';
+          tempPhotos[type] = [dataUrl];
+
+          document.getElementById(previewId).innerHTML = `
+            <div class="photo-preview-item">
+              <img src="${dataUrl}" alt="">
+              <button class="photo-preview-remove" onclick="removePhoto('${type}', '${previewId}')" type="button">✕</button>
+            </div>`;
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removePhoto(type, previewId) {
+      tempPhotos[type] = [];
+      document.getElementById(previewId).innerHTML = '';
+    }
+
+    // ===== ADD SALE =====
+    function addSale() {
+      const item = document.getElementById('saleItem').value;
+      const price = parseFloat(document.getElementById('salePrice').value) || 0;
+      if (!item || price === 0) { toast('⚠️ Fill in item & price'); return; }
+
+      const saleDate = document.getElementById('saleDate').value;
+      const cost = parseFloat(document.getElementById('saleCost').value) || 0;
+      const fees = parseFloat(document.getElementById('saleFees').value) || 0;
+      const shipping = parseFloat(document.getElementById('saleShipping').value) || 0;
+
+      sales.push({
+        id: generateId(),
+        date: saleDate ? new Date(saleDate + 'T12:00:00').toISOString() : new Date().toISOString(),
+        platform: document.getElementById('salePlatform').value,
+        item, price, cost, fees, shipping,
+        netProfit: price - cost - fees - shipping,
+        notes: document.getElementById('saleNotes').value,
+        photo: tempPhotos.sale[0] || null
+      });
+      saveData();
+
+      // Reset
+      ['saleItem','salePrice','saleCost','saleFees','saleShipping','saleNotes'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('saleDate').value = new Date().toISOString().split('T')[0];
+      tempPhotos.sale = [];
+      document.getElementById('salePhotoPreview').innerHTML = '';
+      document.getElementById('salePhoto').value = '';
+
+      updateDashboard();
+      toast('✅ Sale added!');
+      switchTab('dashboard');
+    }
+
+    // ===== ADD PURCHASE =====
+    function addPurchase() {
+      const cost = parseFloat(document.getElementById('purchaseCost').value) || 0;
+      if (cost === 0) { toast('⚠️ Enter total cost'); return; }
+
+      const purchaseDate = document.getElementById('purchaseDate').value;
+
+      purchases.push({
+        id: generateId(),
+        date: purchaseDate ? new Date(purchaseDate + 'T12:00:00').toISOString() : new Date().toISOString(),
+        source: document.getElementById('purchaseSource').value,
+        cost,
+        items: parseInt(document.getElementById('purchaseItems').value) || 0,
+        notes: document.getElementById('purchaseNotes').value,
+        photo: tempPhotos.purchase[0] || null
+      });
+      saveData();
+
+      ['purchaseCost','purchaseItems','purchaseNotes'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('purchaseDate').value = new Date().toISOString().split('T')[0];
+      tempPhotos.purchase = [];
+      document.getElementById('purchasePhotoPreview').innerHTML = '';
+      document.getElementById('purchasePhoto').value = '';
+
+      updateDashboard();
+      toast('✅ Purchase added!');
+      switchTab('dashboard');
+    }
+
+    // ===== DELETE =====
+    function deleteItem(id, type) {
+      if (!confirm('Delete this item?')) return;
+      if (type === 'sale') sales = sales.filter(s => s.id !== id);
+      else purchases = purchases.filter(p => p.id !== id);
+      saveData();
+      updateDashboard();
+      renderInventory();
+      toast('🗑️ Deleted');
+    }
+
+    // ===== EDIT (scroll to form with prefilled data) =====
+    function editItem(id, type) {
+      if (type === 'sale') {
+        const s = sales.find(x => x.id === id);
+        if (!s) return;
+        setAddType('sale');
+        document.getElementById('salePlatform').value = s.platform;
+        document.getElementById('saleDate').value = s.date.split('T')[0];
+        document.getElementById('saleItem').value = s.item;
+        document.getElementById('salePrice').value = s.price;
+        document.getElementById('saleCost').value = s.cost;
+        document.getElementById('saleFees').value = s.fees;
+        document.getElementById('saleShipping').value = s.shipping;
+        document.getElementById('saleNotes').value = s.notes || '';
+        // Remove old entry
+        sales = sales.filter(x => x.id !== id);
+        saveData();
+      } else {
+        const p = purchases.find(x => x.id === id);
+        if (!p) return;
+        setAddType('purchase');
+        document.getElementById('purchaseSource').value = p.source;
+        document.getElementById('purchaseDate').value = p.date.split('T')[0];
+        document.getElementById('purchaseCost').value = p.cost;
+        document.getElementById('purchaseItems').value = p.items;
+        document.getElementById('purchaseNotes').value = p.notes || '';
+        purchases = purchases.filter(x => x.id !== id);
+        saveData();
       }
-      
-      list.innerHTML = window.purchases.map(purchase => {
-        const date = new Date(purchase.date).toLocaleDateString();
-        const avgCost = purchase.items > 0 ? (purchase.cost / purchase.items) : 0;
-        
-        return `
-          <div class="history-item purchase">
-            <div class="history-header">
-              <div class="history-title">${purchase.source}</div>
-              <div class="history-amount negative">-$${purchase.cost.toFixed(2)}</div>
-            </div>
-            <div class="history-details">
-              <span>${date}</span>
-              <span>${purchase.items} items</span>
-              <span>Avg: $${avgCost.toFixed(2)}</span>
-            </div>
-            ${purchase.notes ? `<div style="margin-top: 10px; font-size: 13px; color: #666;">${purchase.notes}</div>` : ''}
-            <button class="delete-btn" onclick="deletePurchase('${purchase.id}')">Delete</button>
-          </div>
-        `;
-      }).join('');
-    };
+      switchTab('addTab');
+      toast('📝 Editing — save when done');
+    }
 
-    // Proper CSV parser that handles quoted fields
+    // ===== EXPORT =====
+    function exportInventory() {
+      let csv = 'Type,Date,Platform/Source,Item/Description,Price,Cost,Fees,Shipping,Net Profit,Notes\n';
+
+      sales.forEach(s => {
+        csv += `Sale,${s.date.split('T')[0]},${csvEscape(s.platform)},${csvEscape(s.item)},${s.price},${s.cost},${s.fees},${s.shipping},${s.netProfit},${csvEscape(s.notes || '')}\n`;
+      });
+
+      purchases.forEach(p => {
+        csv += `Purchase,${p.date.split('T')[0]},${csvEscape(p.source)},${csvEscape(p.notes || '')},,${p.cost},,,,${p.items} items\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'card-tracker-export-' + new Date().toISOString().split('T')[0] + '.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+      toast('📤 Exported!');
+    }
+
+    function csvEscape(str) {
+      if (!str) return '';
+      if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+        return '"' + str.replace(/"/g, '""') + '"';
+      }
+      return str;
+    }
+
+    // ===== CSV PARSER =====
     function parseCsvLine(line) {
       const result = [];
       let current = '';
       let inQuotes = false;
-      
       for (let i = 0; i < line.length; i++) {
-        const char = line[i];
-        
+        const c = line[i];
         if (inQuotes) {
-          if (char === '"' && line[i + 1] === '"') {
-            current += '"';
-            i++; // skip next quote
-          } else if (char === '"') {
-            inQuotes = false;
-          } else {
-            current += char;
-          }
+          if (c === '"' && line[i + 1] === '"') { current += '"'; i++; }
+          else if (c === '"') inQuotes = false;
+          else current += c;
         } else {
-          if (char === '"') {
-            inQuotes = true;
-          } else if (char === ',') {
-            result.push(current.trim());
-            current = '';
-          } else {
-            current += char;
-          }
+          if (c === '"') inQuotes = true;
+          else if (c === ',') { result.push(current.trim()); current = ''; }
+          else current += c;
         }
       }
       result.push(current.trim());
       return result;
     }
 
-    // Import sales CSV
-    window.importSalesCsv = async function() {
+    // ===== IMPORT SALES CSV =====
+    function importSalesCsv() {
       const input = document.getElementById('salesCsvInput');
       const file = input.files[0];
-      
-      if (!file) {
-        alert('Please select a CSV file');
-        return;
-      }
-      
+      if (!file) return;
+
       const reader = new FileReader();
-      reader.onload = async function(e) {
-        const text = e.target.result;
-        const lines = text.split('\n').filter(line => line.trim());
-        
-        if (lines.length < 2) {
-          alert('CSV file is empty or invalid');
-          return;
-        }
-        
-        showLoading();
+      reader.onload = function(e) {
+        const lines = e.target.result.split('\n').filter(l => l.trim());
+        if (lines.length < 2) { toast('⚠️ CSV empty or invalid'); return; }
+
         const headers = parseCsvLine(lines[0]);
         let imported = 0;
-        
+
         for (let i = 1; i < lines.length; i++) {
           const values = parseCsvLine(lines[i]);
-          
           const row = {};
-          headers.forEach((header, idx) => {
-            row[header] = values[idx] || '';
-          });
-          
-          const platform = row.Platform || row.platform || 'eBay';
+          headers.forEach((h, idx) => { row[h] = values[idx] || ''; });
+
           const item = row.Item || row.item || row['Item Description'] || row['Listing title'] || row.Description || '';
           const price = parseFloat(row.Price || row.price || row['Sale Price'] || row['Total sales (Includes taxes)'] || 0);
           const cost = parseFloat(row.Cost || row.cost || row['Cost Paid'] || 0);
           const fees = parseFloat(row.Fees || row.fees || row['Total selling costs'] || 0);
           const shipping = parseFloat(row.Shipping || row.shipping || row['Shipping Cost'] || 0);
-          const notes = row.Notes || row.notes || '';
           const rawDate = row.Date || row.date || row['Sale Date'] || row['Transaction date'] || '';
-          const date = rawDate ? new Date(rawDate).toISOString() : new Date().toISOString();
-          
-          if (item && price > 0) {
-            const netProfit = price - cost - fees - shipping;
-            
-            window.sales.push({
-              id: generateId(),
-              date, platform, item, price, cost, fees, shipping, netProfit, notes
-            });
-            imported++;
-          }
-        }
-        
-        if (imported > 0) saveData();
-        hideLoading();
-        
-        if (imported > 0) {
-          updateDashboard();
-          renderSalesHistory();
-          alert(`✅ Successfully imported ${imported} sales!`);
-          input.value = '';
-        } else {
-          alert('No valid sales found in CSV. Check your column names and data.');
-        }
-      };
-      
-      reader.readAsText(file);
-    };
 
-    // Import purchases CSV
-    window.importPurchasesCsv = async function() {
-      const input = document.getElementById('purchasesCsvInput');
-      const file = input.files[0];
-      
-      if (!file) {
-        alert('Please select a CSV file');
-        return;
-      }
-      
-      const reader = new FileReader();
-      reader.onload = async function(e) {
-        const text = e.target.result;
-        const lines = text.split('\n').filter(line => line.trim());
-        
-        if (lines.length < 2) {
-          alert('CSV file is empty or invalid');
-          return;
-        }
-        
-        showLoading();
-        const headers = parseCsvLine(lines[0]);
-        let imported = 0;
-        
-        for (let i = 1; i < lines.length; i++) {
-          const values = parseCsvLine(lines[i]);
-          
-          const row = {};
-          headers.forEach((header, idx) => {
-            row[header] = values[idx] || '';
-          });
-          
-          const source = row.Source || row.source || 'Other';
-          const cost = parseFloat(row.Cost || row.cost || row['Total Cost'] || 0);
-          const items = parseInt(row.Items || row.items || row['Number of Items'] || 0);
-          const notes = row.Notes || row.notes || row.Description || '';
-          const rawDate = row.Date || row.date || row['Purchase Date'] || '';
-          
-          if (cost > 0) {
-            window.purchases.push({
+          if (item && price > 0) {
+            sales.push({
               id: generateId(),
               date: rawDate ? new Date(rawDate).toISOString() : new Date().toISOString(),
-              source, cost, items, notes
+              platform: row.Platform || row.platform || 'eBay',
+              item, price, cost, fees, shipping,
+              netProfit: price - cost - fees - shipping,
+              notes: row.Notes || row.notes || '',
+              photo: null
             });
             imported++;
           }
         }
-        
-        if (imported > 0) saveData();
-        hideLoading();
-        
-        if (imported > 0) {
-          updateDashboard();
-          renderPurchasesHistory();
-          alert(`✅ Successfully imported ${imported} purchases!`);
-          input.value = '';
-        } else {
-          alert('No valid purchases found in CSV. Check your column names and data.');
-        }
+        if (imported > 0) { saveData(); updateDashboard(); renderInventory(); }
+        toast(imported > 0 ? `✅ Imported ${imported} sales!` : '⚠️ No valid sales found');
+        input.value = '';
       };
-      
       reader.readAsText(file);
-    };
+    }
+
+    // ===== IMPORT PURCHASES CSV =====
+    function importPurchasesCsv() {
+      const input = document.getElementById('purchasesCsvInput');
+      const file = input.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const lines = e.target.result.split('\n').filter(l => l.trim());
+        if (lines.length < 2) { toast('⚠️ CSV empty or invalid'); return; }
+
+        const headers = parseCsvLine(lines[0]);
+        let imported = 0;
+
+        for (let i = 1; i < lines.length; i++) {
+          const values = parseCsvLine(lines[i]);
+          const row = {};
+          headers.forEach((h, idx) => { row[h] = values[idx] || ''; });
+
+          const cost = parseFloat(row.Cost || row.cost || row['Total Cost'] || 0);
+          const rawDate = row.Date || row.date || row['Purchase Date'] || '';
+
+          if (cost > 0) {
+            purchases.push({
+              id: generateId(),
+              date: rawDate ? new Date(rawDate).toISOString() : new Date().toISOString(),
+              source: row.Source || row.source || 'Other',
+              cost,
+              items: parseInt(row.Items || row.items || row['Number of Items'] || 0),
+              notes: row.Notes || row.notes || row.Description || '',
+              photo: null
+            });
+            imported++;
+          }
+        }
+        if (imported > 0) { saveData(); updateDashboard(); renderInventory(); }
+        toast(imported > 0 ? `✅ Imported ${imported} purchases!` : '⚠️ No valid purchases found');
+        input.value = '';
+      };
+      reader.readAsText(file);
+    }
   </script>
 </body>
 </html>
