@@ -594,27 +594,6 @@
     </div>
   </div>
 
-  <!-- SETUP MODAL -->
-  <div id="setupModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center;">
-    <div style="background: white; padding: 40px; border-radius: 20px; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
-      <h2 style="font-family: 'Bebas Neue', cursive; font-size: 36px; color: var(--primary); margin-bottom: 10px; letter-spacing: 2px;">Welcome to Card Tracker Pro!</h2>
-      <p style="color: #666; margin-bottom: 30px; font-size: 16px;">Let's set up your account to get started</p>
-      
-      <div class="form-group">
-        <label class="form-label">Your Name (Optional)</label>
-        <input type="text" class="form-input" id="setupName" placeholder="Enter your name">
-      </div>
-      
-      <div class="form-group">
-        <label class="form-label">Annual Profit Goal</label>
-        <input type="number" class="form-input" id="setupGoal" placeholder="50000" value="50000">
-        <p style="font-size: 13px; color: #888; margin-top: 8px;">How much profit do you want to make this year?</p>
-      </div>
-      
-      <button class="btn btn-primary" onclick="completeSetup()">🚀 Get Started</button>
-    </div>
-  </div>
-
   <!-- MAIN APP -->
   <div id="mainApp" style="display: none;">
     <div class="header">
@@ -881,10 +860,6 @@
       document.getElementById('mainApp').style.display = 'block';
       loadData();
 
-      if (!localStorage.getItem('ctp_settings')) {
-        document.getElementById('setupModal').style.display = 'flex';
-      }
-
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('saleDate').value = today;
       document.getElementById('purchaseDate').value = today;
@@ -894,17 +869,6 @@
       renderSalesHistory();
       renderPurchasesHistory();
     });
-
-    window.completeSetup = function() {
-      const name = document.getElementById('setupName').value.trim();
-      const goal = parseFloat(document.getElementById('setupGoal').value) || 50000;
-      window.settings.name = name;
-      window.settings.profitGoal = goal;
-      saveData();
-      document.getElementById('setupModal').style.display = 'none';
-      updateHeader();
-      updateDashboard();
-    };
 
     window.updateHeader = function() {
       const goalText = window.settings.name 
