@@ -14,14 +14,19 @@
       --card-bg: #FFFFFF; --shadow: 0 4px 20px rgba(0,0,0,0.08); --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
     }
     body { font-family: 'Archivo', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; color: var(--dark); padding-bottom: 80px; }
+
+    /* HEADER */
     .header { background: var(--card-bg); padding: 20px; box-shadow: var(--shadow); position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; }
     .header-left h1 { font-family: 'Bebas Neue', cursive; font-size: 32px; color: var(--primary); letter-spacing: 2px; }
     .header-left p { color: #666; font-size: 14px; margin-top: 4px; }
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+
+    /* TABS */
     .tab-content { display: none; animation: fadeIn 0.3s ease; }
     .tab-content.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+    /* GOAL CARD */
     .goal-card { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); padding: 25px; border-radius: 20px; color: white; box-shadow: var(--shadow-lg); margin-bottom: 20px; }
     .goal-header { display: flex; justify-content: space-between; align-items: flex-start; }
     .goal-amount { font-size: 48px; font-weight: 700; font-family: 'Bebas Neue', cursive; letter-spacing: 2px; }
@@ -34,6 +39,7 @@
     .settings-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 36px; height: 36px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
     .settings-btn:hover { background: rgba(255,255,255,0.35); }
 
+    /* STAT CARDS */
     .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
     .stat-card { background: var(--card-bg); padding: 18px; border-radius: 16px; box-shadow: var(--shadow); position: relative; overflow: hidden; }
     .stat-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--primary); }
@@ -44,6 +50,7 @@
     .stat-label { font-size: 11px; text-transform: uppercase; font-weight: 600; color: #888; letter-spacing: 1px; margin-bottom: 6px; }
     .stat-value { font-size: 26px; font-weight: 700; color: var(--dark); font-family: 'Bebas Neue', cursive; letter-spacing: 1px; }
 
+    /* FORMS */
     .form-card { background: var(--card-bg); padding: 25px; border-radius: 20px; box-shadow: var(--shadow); margin-bottom: 20px; }
     .form-card h2 { margin-bottom: 20px; font-family: 'Bebas Neue', cursive; font-size: 28px; letter-spacing: 1px; }
     .form-group { margin-bottom: 18px; }
@@ -56,11 +63,36 @@
     .btn-primary { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; box-shadow: 0 4px 15px rgba(255,107,53,0.3); }
     .btn-primary:active { transform: translateY(2px); }
 
+    /* SUB TABS (Buy/Sell toggle) */
+    .sub-tabs { display: flex; gap: 0; margin-bottom: 20px; border-radius: 12px; overflow: hidden; border: 2px solid var(--primary); }
+    .sub-tab { flex: 1; padding: 14px; text-align: center; font-size: 15px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s; background: var(--card-bg); color: var(--primary); }
+    .sub-tab.active { background: var(--primary); color: white; }
+    .sub-tab:first-child { border-right: 2px solid var(--primary); }
+    .sub-content { display: none; }
+    .sub-content.active { display: block; }
+
+    /* PHOTO UPLOAD */
+    .photo-upload { border: 2px dashed #ccc; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--light); margin-bottom: 5px; }
+    .photo-upload:hover { border-color: var(--primary); background: rgba(255,107,53,0.05); }
+    .photo-upload-icon { font-size: 32px; margin-bottom: 6px; }
+    .photo-upload-text { font-size: 13px; color: #888; }
+    .photo-preview { width: 100%; max-height: 200px; object-fit: cover; border-radius: 10px; margin-top: 10px; display: none; }
+    .photo-remove { font-size: 12px; color: var(--danger); cursor: pointer; text-align: center; margin-top: 6px; display: none; font-weight: 600; }
+
+    /* SEARCH BAR */
+    .search-bar { position: relative; margin-bottom: 16px; }
+    .search-bar input { width: 100%; padding: 14px 16px 14px 44px; border: 2px solid rgba(255,255,255,0.3); border-radius: 14px; font-size: 15px; font-family: 'Archivo', sans-serif; background: rgba(255,255,255,0.95); color: var(--dark); transition: all 0.3s; }
+    .search-bar input:focus { outline: none; border-color: var(--primary); background: white; }
+    .search-bar input::placeholder { color: #aaa; }
+    .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 18px; pointer-events: none; }
+
+    /* FILTER CHIPS */
     .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
     .filter-chip { padding: 8px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; border: 2px solid #E5E5E5; background: var(--card-bg); color: #666; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
     .filter-chip.active { border-color: var(--primary); background: var(--primary); color: white; }
     .filter-chip:hover:not(.active) { border-color: var(--primary); color: var(--primary); }
 
+    /* HISTORY / INVENTORY LIST */
     .history-list { display: flex; flex-direction: column; gap: 12px; }
     .history-item { background: var(--card-bg); padding: 18px; border-radius: 16px; box-shadow: var(--shadow); border-left: 4px solid var(--primary); }
     .history-item.purchase { border-left-color: var(--secondary); }
@@ -78,16 +110,19 @@
     .badge-whatnot { background: #E1BEE7; color: #6A1B9A; }
     .badge-source { background: #E3F2FD; color: #1565C0; }
     .history-notes { margin-top: 8px; font-size: 13px; color: #666; }
+    .history-photo { width: 100%; max-height: 180px; object-fit: cover; border-radius: 10px; margin-top: 10px; }
     .delete-btn { background: var(--danger); color: white; border: none; padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; margin-top: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
     .history-count { font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 12px; }
     .file-input-wrap { margin-bottom: 15px; padding: 12px; width: 100%; border: 2px dashed #ccc; border-radius: 8px; background: var(--light); }
 
+    /* NAV */
     .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); box-shadow: 0 -4px 20px rgba(0,0,0,0.1); display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; }
-    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 12px; cursor: pointer; transition: all 0.3s ease; border-radius: 12px; color: #888; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 16px; cursor: pointer; transition: all 0.3s ease; border-radius: 12px; color: #888; }
     .nav-item.active { color: var(--primary); background: rgba(255,107,53,0.1); }
     .nav-icon { font-size: 22px; }
     .nav-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
 
+    /* MODAL */
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
     .modal-overlay.active { display: flex; }
     .modal { background: white; padding: 30px; border-radius: 20px; max-width: 500px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: var(--shadow-lg); }
@@ -103,6 +138,7 @@
     .toggle-switch input:checked + .toggle-slider { background: var(--primary); }
     .toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
 
+    /* MISC */
     .empty-state { text-align: center; padding: 50px 20px; color: #888; }
     .empty-icon { font-size: 56px; margin-bottom: 15px; opacity: 0.3; }
     .empty-text { font-size: 16px; margin-bottom: 6px; }
@@ -120,22 +156,16 @@
   <div id="loadingOverlay" class="loading-overlay"><div class="loading-spinner"></div></div>
   <div id="authScreen" style="display: none;"></div>
 
-  <!-- DASHBOARD SETTINGS MODAL -->
+  <!-- SETTINGS MODAL -->
   <div id="dashSettingsModal" class="modal-overlay">
     <div class="modal">
       <button class="modal-close" onclick="closeDashSettings()">&times;</button>
       <h2>⚙️ Dashboard Settings</h2>
-      <div class="form-group">
-        <label class="form-label">Your Name</label>
-        <input type="text" class="form-input" id="settingsName" placeholder="Enter your name">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Annual Profit Goal ($)</label>
-        <input type="number" class="form-input" id="settingsGoal" placeholder="50000">
-      </div>
-      <p style="font-size: 13px; font-weight: 600; color: #555; text-transform: uppercase; letter-spacing: 0.5px; margin: 20px 0 12px;">Visible Stat Cards</p>
+      <div class="form-group"><label class="form-label">Your Name</label><input type="text" class="form-input" id="settingsName" placeholder="Enter your name"></div>
+      <div class="form-group"><label class="form-label">Annual Profit Goal ($)</label><input type="number" class="form-input" id="settingsGoal" placeholder="50000"></div>
+      <p style="font-size:13px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:0.5px;margin:20px 0 12px;">Visible Stat Cards</p>
       <div id="statToggles"></div>
-      <button class="btn btn-primary" onclick="saveDashSettings()" style="margin-top: 20px;">Save Settings</button>
+      <button class="btn btn-primary" onclick="saveDashSettings()" style="margin-top:20px;">Save Settings</button>
     </div>
   </div>
 
@@ -148,7 +178,8 @@
       </div>
     </div>
     <div class="container">
-      <!-- DASHBOARD -->
+
+      <!-- ===== DASHBOARD ===== -->
       <div id="dashboard" class="tab-content active">
         <div class="goal-card">
           <div class="goal-header">
@@ -158,66 +189,108 @@
             </div>
             <button class="settings-btn" onclick="openDashSettings()" title="Dashboard Settings">⚙️</button>
           </div>
-          <div class="progress-bar"><div class="progress-fill" id="progressBar" style="width: 0%"></div></div>
+          <div class="progress-bar"><div class="progress-fill" id="progressBar" style="width:0%"></div></div>
           <div class="progress-text"><span id="progressPercent">0</span>% to <span id="goalDisplay">Goal</span></div>
           <div class="goal-target" onclick="editGoalTarget()">🎯 Click to edit goal</div>
         </div>
         <div id="statCardsContainer"></div>
       </div>
 
-      <!-- ADD SALE -->
-      <div id="addSale" class="tab-content">
-        <div class="form-card">
-          <h2 style="color: var(--primary);">Add Sale</h2>
-          <div class="form-group"><label class="form-label">Platform</label><select class="form-select" id="salePlatform"><option value="eBay">eBay</option><option value="Whatnot">Whatnot</option></select></div>
-          <div class="form-group"><label class="form-label">Sale Date</label><input type="date" class="form-input" id="saleDate"></div>
-          <div class="form-group"><label class="form-label">Item Description</label><input type="text" class="form-input" id="saleItem" placeholder="e.g., 2023 Panini Prizm Jordan Rookie PSA 10"></div>
-          <div class="row-group"><div class="form-group"><label class="form-label">Sale Price</label><input type="number" class="form-input" id="salePrice" placeholder="0.00" step="0.01"></div><div class="form-group"><label class="form-label">Cost Paid</label><input type="number" class="form-input" id="saleCost" placeholder="0.00" step="0.01"></div></div>
-          <div class="row-group"><div class="form-group"><label class="form-label">Fees</label><input type="number" class="form-input" id="saleFees" placeholder="0.00" step="0.01"></div><div class="form-group"><label class="form-label">Shipping Cost</label><input type="number" class="form-input" id="saleShipping" placeholder="0.00" step="0.01"></div></div>
-          <div class="form-group"><label class="form-label">Notes (Optional)</label><textarea class="form-textarea" id="saleNotes" placeholder="Additional details..."></textarea></div>
-          <button class="btn btn-primary" onclick="addSale()">💰 Add Sale</button>
+      <!-- ===== ADD (Combined Buy/Sell) ===== -->
+      <div id="addEntry" class="tab-content">
+        <div class="sub-tabs">
+          <div class="sub-tab active" onclick="switchSubTab('sale')">💰 Sell</div>
+          <div class="sub-tab" onclick="switchSubTab('purchase')">🛒 Buy</div>
+        </div>
+
+        <!-- SALE FORM -->
+        <div id="subSale" class="sub-content active">
+          <div class="form-card">
+            <h2 style="color:var(--primary);">Log a Sale</h2>
+            <div class="form-group"><label class="form-label">Platform</label><select class="form-select" id="salePlatform"><option value="eBay">eBay</option><option value="Whatnot">Whatnot</option></select></div>
+            <div class="form-group"><label class="form-label">Sale Date</label><input type="date" class="form-input" id="saleDate"></div>
+            <div class="form-group"><label class="form-label">Item Description</label><input type="text" class="form-input" id="saleItem" placeholder="e.g., 2023 Panini Prizm Jordan Rookie PSA 10"></div>
+            <div class="row-group">
+              <div class="form-group"><label class="form-label">Sale Price</label><input type="number" class="form-input" id="salePrice" placeholder="0.00" step="0.01"></div>
+              <div class="form-group"><label class="form-label">Cost Paid</label><input type="number" class="form-input" id="saleCost" placeholder="0.00" step="0.01"></div>
+            </div>
+            <div class="row-group">
+              <div class="form-group"><label class="form-label">Fees</label><input type="number" class="form-input" id="saleFees" placeholder="0.00" step="0.01"></div>
+              <div class="form-group"><label class="form-label">Shipping Cost</label><input type="number" class="form-input" id="saleShipping" placeholder="0.00" step="0.01"></div>
+            </div>
+            <div class="form-group"><label class="form-label">Notes (Optional)</label><textarea class="form-textarea" id="saleNotes" placeholder="Additional details..."></textarea></div>
+            <div class="form-group">
+              <label class="form-label">Photo (Optional)</label>
+              <div class="photo-upload" onclick="document.getElementById('salePhotoInput').click()">
+                <div class="photo-upload-icon">📷</div>
+                <div class="photo-upload-text">Tap to add a photo</div>
+              </div>
+              <input type="file" id="salePhotoInput" accept="image/*" style="display:none" onchange="previewPhoto('sale')">
+              <img id="salePhotoPreview" class="photo-preview">
+              <div id="salePhotoRemove" class="photo-remove" onclick="removePhoto('sale')">✕ Remove photo</div>
+            </div>
+            <button class="btn btn-primary" onclick="addSale()">💰 Add Sale</button>
+          </div>
+        </div>
+
+        <!-- PURCHASE FORM -->
+        <div id="subPurchase" class="sub-content">
+          <div class="form-card">
+            <h2 style="color:var(--secondary);">Log a Purchase</h2>
+            <div class="form-group"><label class="form-label">Source</label><select class="form-select" id="purchaseSource"><option value="Estate Sale">Estate Sale</option><option value="Card Show">Card Show</option><option value="eBay">eBay</option><option value="Facebook Marketplace">Facebook Marketplace</option><option value="Craigslist">Craigslist</option><option value="Collection Purchase">Collection Purchase</option><option value="Other">Other</option></select></div>
+            <div class="form-group"><label class="form-label">Purchase Date</label><input type="date" class="form-input" id="purchaseDate"></div>
+            <div class="row-group">
+              <div class="form-group"><label class="form-label">Total Cost</label><input type="number" class="form-input" id="purchaseCost" placeholder="0.00" step="0.01"></div>
+              <div class="form-group"><label class="form-label"># of Items</label><input type="number" class="form-input" id="purchaseItems" placeholder="0"></div>
+            </div>
+            <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="purchaseNotes" placeholder="What did you buy?"></textarea></div>
+            <div class="form-group">
+              <label class="form-label">Photo (Optional)</label>
+              <div class="photo-upload" onclick="document.getElementById('purchasePhotoInput').click()">
+                <div class="photo-upload-icon">📷</div>
+                <div class="photo-upload-text">Tap to add a photo</div>
+              </div>
+              <input type="file" id="purchasePhotoInput" accept="image/*" style="display:none" onchange="previewPhoto('purchase')">
+              <img id="purchasePhotoPreview" class="photo-preview">
+              <div id="purchasePhotoRemove" class="photo-remove" onclick="removePhoto('purchase')">✕ Remove photo</div>
+            </div>
+            <button class="btn btn-primary" onclick="addPurchase()">🛒 Add Purchase</button>
+          </div>
         </div>
       </div>
 
-      <!-- ADD PURCHASE -->
-      <div id="addPurchase" class="tab-content">
-        <div class="form-card">
-          <h2 style="color: var(--secondary);">Add Purchase</h2>
-          <div class="form-group"><label class="form-label">Source</label><select class="form-select" id="purchaseSource"><option value="Estate Sale">Estate Sale</option><option value="Card Show">Card Show</option><option value="eBay">eBay</option><option value="Facebook Marketplace">Facebook Marketplace</option><option value="Craigslist">Craigslist</option><option value="Collection Purchase">Collection Purchase</option><option value="Other">Other</option></select></div>
-          <div class="form-group"><label class="form-label">Purchase Date</label><input type="date" class="form-input" id="purchaseDate"></div>
-          <div class="row-group"><div class="form-group"><label class="form-label">Total Cost</label><input type="number" class="form-input" id="purchaseCost" placeholder="0.00" step="0.01"></div><div class="form-group"><label class="form-label"># of Items</label><input type="number" class="form-input" id="purchaseItems" placeholder="0"></div></div>
-          <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="purchaseNotes" placeholder="What did you buy?"></textarea></div>
-          <button class="btn btn-primary" onclick="addPurchase()">🛒 Add Purchase</button>
+      <!-- ===== INVENTORY ===== -->
+      <div id="inventory" class="tab-content">
+        <div class="section-title">Inventory</div>
+        <div class="search-bar">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" placeholder="Search items, notes, sources..." oninput="renderInventory()">
         </div>
-      </div>
-
-      <!-- IMPORT/EXPORT -->
-      <div id="bulkImport" class="tab-content">
-        <div class="form-card"><h2 style="color: var(--primary);">Import Sales</h2><p style="font-size: 13px; color: #666; margin-bottom: 12px;">CSV or Excel — Columns: Platform, Item, Price, Cost, Fees, Shipping, Date, Notes</p><input type="file" id="salesFileInput" accept=".csv,.xlsx,.xls" class="file-input-wrap"><button class="btn btn-primary" onclick="importSalesFile()">📥 Import Sales</button></div>
-        <div class="form-card"><h2 style="color: var(--secondary);">Import Purchases</h2><p style="font-size: 13px; color: #666; margin-bottom: 12px;">CSV or Excel — Columns: Source, Cost, Items, Date, Notes</p><input type="file" id="purchasesFileInput" accept=".csv,.xlsx,.xls" class="file-input-wrap"><button class="btn btn-primary" onclick="importPurchasesFile()">📥 Import Purchases</button></div>
-        <div class="form-card"><h2 style="color: var(--success);">Export Data</h2><p style="font-size: 13px; color: #666; margin-bottom: 15px;">Download all sales and purchases as an Excel workbook.</p><button class="btn btn-primary" onclick="exportToExcel()">📤 Export to Excel</button></div>
-        <div class="tip-box"><h4>💡 Import Tips</h4><ul><li>First row should be column headers</li><li>Accepts .csv, .xlsx, and .xls files</li><li>Numbers should not have dollar signs or commas</li><li>If no Date column, today's date is used</li><li>You can import your eBay sales report directly!</li></ul></div>
-      </div>
-
-      <!-- COMBINED HISTORY -->
-      <div id="history" class="tab-content">
-        <div class="section-title">History</div>
         <div class="filter-bar" id="filterBar"></div>
         <div class="history-count" id="historyCount"></div>
-        <div id="historyList" class="history-list"></div>
+        <div id="inventoryList" class="history-list"></div>
+      </div>
+
+      <!-- ===== IMPORT/EXPORT ===== -->
+      <div id="bulkImport" class="tab-content">
+        <div class="form-card"><h2 style="color:var(--primary);">Import Sales</h2><p style="font-size:13px;color:#666;margin-bottom:12px;">CSV or Excel — Columns: Platform, Item, Price, Cost, Fees, Shipping, Date, Notes</p><input type="file" id="salesFileInput" accept=".csv,.xlsx,.xls" class="file-input-wrap"><button class="btn btn-primary" onclick="importSalesFile()">📥 Import Sales</button></div>
+        <div class="form-card"><h2 style="color:var(--secondary);">Import Purchases</h2><p style="font-size:13px;color:#666;margin-bottom:12px;">CSV or Excel — Columns: Source, Cost, Items, Date, Notes</p><input type="file" id="purchasesFileInput" accept=".csv,.xlsx,.xls" class="file-input-wrap"><button class="btn btn-primary" onclick="importPurchasesFile()">📥 Import Purchases</button></div>
+        <div class="form-card"><h2 style="color:var(--success);">Export Data</h2><p style="font-size:13px;color:#666;margin-bottom:15px;">Download all sales and purchases as an Excel workbook.</p><button class="btn btn-primary" onclick="exportToExcel()">📤 Export to Excel</button></div>
+        <div class="tip-box"><h4>💡 Import Tips</h4><ul><li>First row should be column headers</li><li>Accepts .csv, .xlsx, and .xls files</li><li>Numbers should not have dollar signs or commas</li><li>If no Date column, today's date is used</li><li>You can import your eBay sales report directly!</li></ul></div>
       </div>
     </div>
 
+    <!-- NAV BAR -->
     <nav class="nav-bar">
       <div class="nav-item active" data-tab="dashboard" onclick="switchTab('dashboard')"><div class="nav-icon">📊</div><div class="nav-label">Dashboard</div></div>
-      <div class="nav-item" data-tab="addSale" onclick="switchTab('addSale')"><div class="nav-icon">💰</div><div class="nav-label">Sell</div></div>
-      <div class="nav-item" data-tab="addPurchase" onclick="switchTab('addPurchase')"><div class="nav-icon">🛒</div><div class="nav-label">Buy</div></div>
-      <div class="nav-item" data-tab="history" onclick="switchTab('history')"><div class="nav-icon">📋</div><div class="nav-label">History</div></div>
+      <div class="nav-item" data-tab="addEntry" onclick="switchTab('addEntry')"><div class="nav-icon">➕</div><div class="nav-label">Add</div></div>
+      <div class="nav-item" data-tab="inventory" onclick="switchTab('inventory')"><div class="nav-icon">📋</div><div class="nav-label">Inventory</div></div>
       <div class="nav-item" data-tab="bulkImport" onclick="switchTab('bulkImport')"><div class="nav-icon">📤</div><div class="nav-label">Import</div></div>
     </nav>
   </div>
 
   <script>
+    // ===== DATA =====
     window.sales = [];
     window.purchases = [];
     window.settings = {
@@ -245,12 +318,15 @@
       totalShipping:    { label: 'Shipping Costs',    color: 'accent',    fmt: function(v){ return '$'+v.toFixed(0); } }
     };
 
+    // ===== HELPERS =====
     function generateId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 9); }
+
     function saveData() {
       localStorage.setItem('ctp_sales', JSON.stringify(window.sales));
       localStorage.setItem('ctp_purchases', JSON.stringify(window.purchases));
       localStorage.setItem('ctp_settings', JSON.stringify(window.settings));
     }
+
     function loadData() {
       try {
         window.sales = JSON.parse(localStorage.getItem('ctp_sales')) || [];
@@ -267,11 +343,12 @@
         }
       } catch (e) { console.error('Error loading data:', e); }
     }
+
     function showLoading() { document.getElementById('loadingOverlay').style.display = 'flex'; }
     function hideLoading() { document.getElementById('loadingOverlay').style.display = 'none'; }
     function escapeHtml(str) { if (!str) return ''; var d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
 
-    // BOOT
+    // ===== BOOT =====
     window.addEventListener('DOMContentLoaded', function() {
       document.getElementById('authScreen').style.display = 'none';
       document.getElementById('mainApp').style.display = 'block';
@@ -282,15 +359,17 @@
       updateHeader();
       updateDashboard();
       buildFilterBar();
-      renderHistory();
+      renderInventory();
     });
 
+    // ===== HEADER =====
     window.updateHeader = function() {
       var g = window.settings;
       var t = g.name ? g.name + "'s path to $" + g.profitGoal.toLocaleString() : "Track your path to $" + g.profitGoal.toLocaleString();
       document.getElementById('headerGoal').textContent = t;
     };
 
+    // ===== TAB SWITCHING =====
     window.switchTab = function(tabName) {
       document.querySelectorAll('.tab-content').forEach(function(t){ t.classList.remove('active'); });
       document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.remove('active'); });
@@ -299,6 +378,51 @@
       if (nav) nav.classList.add('active');
     };
 
+    // ===== SUB-TAB (Buy/Sell toggle) =====
+    window.switchSubTab = function(which) {
+      document.querySelectorAll('.sub-tab').forEach(function(t){ t.classList.remove('active'); });
+      document.querySelectorAll('.sub-content').forEach(function(c){ c.classList.remove('active'); });
+      if (which === 'sale') {
+        document.querySelectorAll('.sub-tab')[0].classList.add('active');
+        document.getElementById('subSale').classList.add('active');
+      } else {
+        document.querySelectorAll('.sub-tab')[1].classList.add('active');
+        document.getElementById('subPurchase').classList.add('active');
+      }
+    };
+
+    // ===== PHOTO HANDLING =====
+    window.previewPhoto = function(type) {
+      var input = document.getElementById(type + 'PhotoInput');
+      var preview = document.getElementById(type + 'PhotoPreview');
+      var removeBtn = document.getElementById(type + 'PhotoRemove');
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+          removeBtn.style.display = 'block';
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    };
+
+    window.removePhoto = function(type) {
+      document.getElementById(type + 'PhotoInput').value = '';
+      document.getElementById(type + 'PhotoPreview').style.display = 'none';
+      document.getElementById(type + 'PhotoPreview').src = '';
+      document.getElementById(type + 'PhotoRemove').style.display = 'none';
+    };
+
+    function getPhotoData(type) {
+      var preview = document.getElementById(type + 'PhotoPreview');
+      if (preview && preview.style.display !== 'none' && preview.src) {
+        return preview.src;
+      }
+      return '';
+    }
+
+    // ===== GOAL EDITING =====
     window.editGoalTarget = function() {
       var val = prompt('Set your annual profit goal ($):', window.settings.profitGoal);
       if (val === null) return;
@@ -308,7 +432,7 @@
       saveData(); updateHeader(); updateDashboard();
     };
 
-    // DASHBOARD SETTINGS
+    // ===== DASHBOARD SETTINGS =====
     window.openDashSettings = function() {
       document.getElementById('settingsName').value = window.settings.name || '';
       document.getElementById('settingsGoal').value = window.settings.profitGoal;
@@ -332,7 +456,7 @@
       saveData(); updateHeader(); updateDashboard(); closeDashSettings();
     };
 
-    // DASHBOARD
+    // ===== DASHBOARD =====
     window.updateDashboard = function() {
       var totalProfit = window.sales.reduce(function(s,x){ return s+x.netProfit; }, 0);
       var totalSalesAmt = window.sales.reduce(function(s,x){ return s+x.price; }, 0);
@@ -374,42 +498,75 @@
       container.innerHTML = h;
     };
 
-    // ADD / DELETE
+    // ===== ADD SALE =====
     window.addSale = function() {
-      var platform=document.getElementById('salePlatform').value, item=document.getElementById('saleItem').value, saleDate=document.getElementById('saleDate').value;
-      var price=parseFloat(document.getElementById('salePrice').value)||0, cost=parseFloat(document.getElementById('saleCost').value)||0;
-      var fees=parseFloat(document.getElementById('saleFees').value)||0, shipping=parseFloat(document.getElementById('saleShipping').value)||0;
-      var notes=document.getElementById('saleNotes').value;
-      if(!item||price===0){alert('Please fill in item description and sale price');return;}
-      var netProfit=price-cost-fees-shipping;
-      var date=saleDate?new Date(saleDate+'T12:00:00').toISOString():new Date().toISOString();
-      window.sales.push({id:generateId(),date:date,platform:platform,item:item,price:price,cost:cost,fees:fees,shipping:shipping,netProfit:netProfit,notes:notes});
-      saveData();
-      ['saleItem','salePrice','saleCost','saleFees','saleShipping','saleNotes'].forEach(function(id){document.getElementById(id).value='';});
-      document.getElementById('saleDate').value=new Date().toISOString().split('T')[0];
-      updateDashboard(); renderHistory(); alert('✅ Sale added!'); switchTab('dashboard');
-    };
-    window.addPurchase = function() {
-      var source=document.getElementById('purchaseSource').value, purchaseDate=document.getElementById('purchaseDate').value;
-      var cost=parseFloat(document.getElementById('purchaseCost').value)||0, items=parseInt(document.getElementById('purchaseItems').value)||0;
-      var notes=document.getElementById('purchaseNotes').value;
-      if(cost===0){alert('Please enter total cost');return;}
-      var date=purchaseDate?new Date(purchaseDate+'T12:00:00').toISOString():new Date().toISOString();
-      window.purchases.push({id:generateId(),date:date,source:source,cost:cost,items:items,notes:notes});
-      saveData();
-      ['purchaseCost','purchaseItems','purchaseNotes'].forEach(function(id){document.getElementById(id).value='';});
-      document.getElementById('purchaseDate').value=new Date().toISOString().split('T')[0];
-      updateDashboard(); renderHistory(); alert('✅ Purchase added!'); switchTab('dashboard');
-    };
-    window.deleteSale = function(id) { if(!confirm('Delete this sale?'))return; window.sales=window.sales.filter(function(s){return s.id!==id;}); saveData(); updateDashboard(); renderHistory(); };
-    window.deletePurchase = function(id) { if(!confirm('Delete this purchase?'))return; window.purchases=window.purchases.filter(function(p){return p.id!==id;}); saveData(); updateDashboard(); renderHistory(); };
+      var platform = document.getElementById('salePlatform').value;
+      var item = document.getElementById('saleItem').value;
+      var saleDate = document.getElementById('saleDate').value;
+      var price = parseFloat(document.getElementById('salePrice').value) || 0;
+      var cost = parseFloat(document.getElementById('saleCost').value) || 0;
+      var fees = parseFloat(document.getElementById('saleFees').value) || 0;
+      var shipping = parseFloat(document.getElementById('saleShipping').value) || 0;
+      var notes = document.getElementById('saleNotes').value;
+      var photo = getPhotoData('sale');
 
-    // FILTERS
+      if (!item || price === 0) { alert('Please fill in item description and sale price'); return; }
+
+      var netProfit = price - cost - fees - shipping;
+      var date = saleDate ? new Date(saleDate + 'T12:00:00').toISOString() : new Date().toISOString();
+
+      window.sales.push({ id: generateId(), date: date, platform: platform, item: item, price: price, cost: cost, fees: fees, shipping: shipping, netProfit: netProfit, notes: notes, photo: photo });
+      saveData();
+
+      ['saleItem','salePrice','saleCost','saleFees','saleShipping','saleNotes'].forEach(function(id){ document.getElementById(id).value = ''; });
+      document.getElementById('saleDate').value = new Date().toISOString().split('T')[0];
+      removePhoto('sale');
+      updateDashboard(); renderInventory();
+      alert('✅ Sale added!'); switchTab('inventory');
+    };
+
+    // ===== ADD PURCHASE =====
+    window.addPurchase = function() {
+      var source = document.getElementById('purchaseSource').value;
+      var purchaseDate = document.getElementById('purchaseDate').value;
+      var cost = parseFloat(document.getElementById('purchaseCost').value) || 0;
+      var items = parseInt(document.getElementById('purchaseItems').value) || 0;
+      var notes = document.getElementById('purchaseNotes').value;
+      var photo = getPhotoData('purchase');
+
+      if (cost === 0) { alert('Please enter total cost'); return; }
+
+      var date = purchaseDate ? new Date(purchaseDate + 'T12:00:00').toISOString() : new Date().toISOString();
+
+      window.purchases.push({ id: generateId(), date: date, source: source, cost: cost, items: items, notes: notes, photo: photo });
+      saveData();
+
+      ['purchaseCost','purchaseItems','purchaseNotes'].forEach(function(id){ document.getElementById(id).value = ''; });
+      document.getElementById('purchaseDate').value = new Date().toISOString().split('T')[0];
+      removePhoto('purchase');
+      updateDashboard(); renderInventory();
+      alert('✅ Purchase added!'); switchTab('inventory');
+    };
+
+    // ===== DELETE =====
+    window.deleteSale = function(id) {
+      if (!confirm('Delete this sale?')) return;
+      window.sales = window.sales.filter(function(s){ return s.id !== id; });
+      saveData(); updateDashboard(); renderInventory();
+    };
+    window.deletePurchase = function(id) {
+      if (!confirm('Delete this purchase?')) return;
+      window.purchases = window.purchases.filter(function(p){ return p.id !== id; });
+      saveData(); updateDashboard(); renderInventory();
+    };
+
+    // ===== FILTER BAR =====
     var FILTER_GROUPS = [
       {id:'all',label:'All'},{id:'sales',label:'Sales'},{id:'purchases',label:'Purchases'},
       {id:'ebay',label:'eBay'},{id:'whatnot',label:'Whatnot'},{id:'estate',label:'Estate Sale'},
       {id:'show',label:'Card Show'},{id:'fbmp',label:'FB Marketplace'}
     ];
+
     window.buildFilterBar = function() {
       var bar = document.getElementById('filterBar');
       bar.innerHTML = FILTER_GROUPS.map(function(f) {
@@ -417,139 +574,201 @@
         return '<div class="filter-chip'+active+'" onclick="toggleFilter(\''+f.id+'\')">'+f.label+'</div>';
       }).join('');
     };
+
     window.toggleFilter = function(id) {
-      if (id==='all') { window.activeFilters=new Set(['all']); }
+      if (id === 'all') { window.activeFilters = new Set(['all']); }
       else {
         window.activeFilters.delete('all');
         if (window.activeFilters.has(id)) window.activeFilters.delete(id);
         else window.activeFilters.add(id);
-        if (window.activeFilters.size===0) window.activeFilters=new Set(['all']);
+        if (window.activeFilters.size === 0) window.activeFilters = new Set(['all']);
       }
-      buildFilterBar(); renderHistory();
+      buildFilterBar(); renderInventory();
     };
 
-    // HISTORY
-    window.renderHistory = function() {
-      var list=document.getElementById('historyList'), filters=window.activeFilters, entries=[];
-      window.sales.forEach(function(s){
-        var pass=false;
-        if(filters.has('all'))pass=true;
-        else if(filters.has('purchases')&&!filters.has('sales')&&!filters.has('ebay')&&!filters.has('whatnot'))pass=false;
-        else{
-          if(filters.has('sales'))pass=true;
-          if(filters.has('ebay')&&s.platform==='eBay')pass=true;
-          if(filters.has('whatnot')&&s.platform==='Whatnot')pass=true;
+    // ===== INVENTORY (combined sales + purchases, with search + filters + photos) =====
+    window.renderInventory = function() {
+      var list = document.getElementById('inventoryList');
+      var filters = window.activeFilters;
+      var searchTerm = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+      var entries = [];
+
+      // Filter sales
+      window.sales.forEach(function(s) {
+        var pass = false;
+        if (filters.has('all')) pass = true;
+        else if (filters.has('purchases') && !filters.has('sales') && !filters.has('ebay') && !filters.has('whatnot')) pass = false;
+        else {
+          if (filters.has('sales')) pass = true;
+          if (filters.has('ebay') && s.platform === 'eBay') pass = true;
+          if (filters.has('whatnot') && s.platform === 'Whatnot') pass = true;
         }
-        if(pass) entries.push({type:'sale',data:s,date:new Date(s.date)});
-      });
-      window.purchases.forEach(function(p){
-        var pass=false;
-        if(filters.has('all'))pass=true;
-        else if(filters.has('sales')&&!filters.has('purchases')&&!filters.has('ebay')&&!filters.has('estate')&&!filters.has('show')&&!filters.has('fbmp'))pass=false;
-        else{
-          if(filters.has('purchases'))pass=true;
-          if(filters.has('ebay')&&p.source==='eBay')pass=true;
-          if(filters.has('estate')&&p.source==='Estate Sale')pass=true;
-          if(filters.has('show')&&p.source==='Card Show')pass=true;
-          if(filters.has('fbmp')&&p.source==='Facebook Marketplace')pass=true;
+        if (pass && searchTerm) {
+          var haystack = (s.item + ' ' + s.platform + ' ' + (s.notes || '')).toLowerCase();
+          if (haystack.indexOf(searchTerm) === -1) pass = false;
         }
-        if(pass) entries.push({type:'purchase',data:p,date:new Date(p.date)});
+        if (pass) entries.push({ type: 'sale', data: s, date: new Date(s.date) });
       });
-      entries.sort(function(a,b){return b.date-a.date;});
-      document.getElementById('historyCount').textContent=entries.length+' record'+(entries.length!==1?'s':'');
-      if(entries.length===0){list.innerHTML='<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">No records found</div><div class="empty-subtext">Add sales or purchases, or adjust your filters</div></div>';return;}
-      list.innerHTML=entries.map(function(entry){
-        if(entry.type==='sale'){
-          var s=entry.data, pc=s.netProfit>=0?'positive':'negative', bc=s.platform==='eBay'?'badge-ebay':'badge-whatnot';
-          return '<div class="history-item"><div class="history-type sale-type">SALE</div><div class="history-header"><div class="history-title">'+escapeHtml(s.item)+'</div><div class="history-amount '+pc+'">'+(s.netProfit>=0?'+':'')+' $'+s.netProfit.toFixed(2)+'</div></div><div class="history-details"><span class="badge '+bc+'">'+s.platform+'</span><span>'+entry.date.toLocaleDateString()+'</span><span>Sold: $'+s.price.toFixed(2)+'</span><span>Cost: $'+s.cost.toFixed(2)+'</span></div>'+(s.notes?'<div class="history-notes">'+escapeHtml(s.notes)+'</div>':'')+'<button class="delete-btn" onclick="deleteSale(\''+s.id+'\')">Delete</button></div>';
+
+      // Filter purchases
+      window.purchases.forEach(function(p) {
+        var pass = false;
+        if (filters.has('all')) pass = true;
+        else if (filters.has('sales') && !filters.has('purchases') && !filters.has('ebay') && !filters.has('estate') && !filters.has('show') && !filters.has('fbmp')) pass = false;
+        else {
+          if (filters.has('purchases')) pass = true;
+          if (filters.has('ebay') && p.source === 'eBay') pass = true;
+          if (filters.has('estate') && p.source === 'Estate Sale') pass = true;
+          if (filters.has('show') && p.source === 'Card Show') pass = true;
+          if (filters.has('fbmp') && p.source === 'Facebook Marketplace') pass = true;
+        }
+        if (pass && searchTerm) {
+          var haystack = (p.source + ' ' + (p.notes || '')).toLowerCase();
+          if (haystack.indexOf(searchTerm) === -1) pass = false;
+        }
+        if (pass) entries.push({ type: 'purchase', data: p, date: new Date(p.date) });
+      });
+
+      entries.sort(function(a, b) { return b.date - a.date; });
+      document.getElementById('historyCount').textContent = entries.length + ' record' + (entries.length !== 1 ? 's' : '');
+
+      if (entries.length === 0) {
+        list.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">No records found</div><div class="empty-subtext">Add sales or purchases, or adjust your filters</div></div>';
+        return;
+      }
+
+      list.innerHTML = entries.map(function(entry) {
+        if (entry.type === 'sale') {
+          var s = entry.data;
+          var pc = s.netProfit >= 0 ? 'positive' : 'negative';
+          var bc = s.platform === 'eBay' ? 'badge-ebay' : 'badge-whatnot';
+          var photoHtml = s.photo ? '<img class="history-photo" src="' + s.photo + '">' : '';
+          return '<div class="history-item"><div class="history-type sale-type">SALE</div><div class="history-header"><div class="history-title">' + escapeHtml(s.item) + '</div><div class="history-amount ' + pc + '">' + (s.netProfit >= 0 ? '+' : '') + '$' + s.netProfit.toFixed(2) + '</div></div><div class="history-details"><span class="badge ' + bc + '">' + s.platform + '</span><span>' + entry.date.toLocaleDateString() + '</span><span>Sold: $' + s.price.toFixed(2) + '</span><span>Cost: $' + s.cost.toFixed(2) + '</span></div>' + (s.notes ? '<div class="history-notes">' + escapeHtml(s.notes) + '</div>' : '') + photoHtml + '<button class="delete-btn" onclick="deleteSale(\'' + s.id + '\')">Delete</button></div>';
         } else {
-          var p=entry.data, ac=p.items>0?(p.cost/p.items):0;
-          return '<div class="history-item purchase"><div class="history-type purchase-type">PURCHASE</div><div class="history-header"><div class="history-title">'+escapeHtml(p.source)+'</div><div class="history-amount negative">-$'+p.cost.toFixed(2)+'</div></div><div class="history-details"><span class="badge badge-source">'+escapeHtml(p.source)+'</span><span>'+entry.date.toLocaleDateString()+'</span><span>'+p.items+' items</span>'+(p.items>0?'<span>Avg: $'+ac.toFixed(2)+'</span>':'')+'</div>'+(p.notes?'<div class="history-notes">'+escapeHtml(p.notes)+'</div>':'')+'<button class="delete-btn" onclick="deletePurchase(\''+p.id+'\')">Delete</button></div>';
+          var p = entry.data;
+          var ac = p.items > 0 ? (p.cost / p.items) : 0;
+          var photoHtml2 = p.photo ? '<img class="history-photo" src="' + p.photo + '">' : '';
+          return '<div class="history-item purchase"><div class="history-type purchase-type">PURCHASE</div><div class="history-header"><div class="history-title">' + escapeHtml(p.source) + '</div><div class="history-amount negative">-$' + p.cost.toFixed(2) + '</div></div><div class="history-details"><span class="badge badge-source">' + escapeHtml(p.source) + '</span><span>' + entry.date.toLocaleDateString() + '</span><span>' + p.items + ' items</span>' + (p.items > 0 ? '<span>Avg: $' + ac.toFixed(2) + '</span>' : '') + '</div>' + (p.notes ? '<div class="history-notes">' + escapeHtml(p.notes) + '</div>' : '') + photoHtml2 + '<button class="delete-btn" onclick="deletePurchase(\'' + p.id + '\')">Delete</button></div>';
         }
       }).join('');
     };
 
-    // CSV PARSER
-    function parseCsvLine(line){var r=[],c='',q=false;for(var i=0;i<line.length;i++){var ch=line[i];if(q){if(ch==='"'&&line[i+1]==='"'){c+='"';i++;}else if(ch==='"'){q=false;}else{c+=ch;}}else{if(ch==='"'){q=true;}else if(ch===','){r.push(c.trim());c='';}else{c+=ch;}}}r.push(c.trim());return r;}
+    // ===== CSV PARSER =====
+    function parseCsvLine(line) {
+      var r = [], c = '', q = false;
+      for (var i = 0; i < line.length; i++) {
+        var ch = line[i];
+        if (q) {
+          if (ch === '"' && line[i+1] === '"') { c += '"'; i++; }
+          else if (ch === '"') { q = false; }
+          else { c += ch; }
+        } else {
+          if (ch === '"') { q = true; }
+          else if (ch === ',') { r.push(c.trim()); c = ''; }
+          else { c += ch; }
+        }
+      }
+      r.push(c.trim());
+      return r;
+    }
 
-    function parseFile(file){
-      return new Promise(function(resolve,reject){
-        var ext=file.name.split('.').pop().toLowerCase();
-        if(ext==='csv'){
-          var reader=new FileReader();
-          reader.onload=function(e){
-            var lines=e.target.result.split('\n').filter(function(l){return l.trim();});
-            if(lines.length<2){resolve([]);return;}
-            var headers=parseCsvLine(lines[0]),rows=[];
-            for(var i=1;i<lines.length;i++){var vals=parseCsvLine(lines[i]);var row={};headers.forEach(function(h,idx){row[h]=vals[idx]||'';});rows.push(row);}
+    function parseFile(file) {
+      return new Promise(function(resolve, reject) {
+        var ext = file.name.split('.').pop().toLowerCase();
+        if (ext === 'csv') {
+          var reader = new FileReader();
+          reader.onload = function(e) {
+            var lines = e.target.result.split('\n').filter(function(l){ return l.trim(); });
+            if (lines.length < 2) { resolve([]); return; }
+            var headers = parseCsvLine(lines[0]), rows = [];
+            for (var i = 1; i < lines.length; i++) {
+              var vals = parseCsvLine(lines[i]); var row = {};
+              headers.forEach(function(h, idx) { row[h] = vals[idx] || ''; });
+              rows.push(row);
+            }
             resolve(rows);
           };
-          reader.onerror=reject;
+          reader.onerror = reject;
           reader.readAsText(file);
         } else {
-          var reader2=new FileReader();
-          reader2.onload=function(e){
-            try{var wb=XLSX.read(e.target.result,{type:'array'});var sheet=wb.Sheets[wb.SheetNames[0]];resolve(XLSX.utils.sheet_to_json(sheet,{defval:''}));}
-            catch(err){reject(err);}
+          var reader2 = new FileReader();
+          reader2.onload = function(e) {
+            try {
+              var wb = XLSX.read(e.target.result, { type: 'array' });
+              var sheet = wb.Sheets[wb.SheetNames[0]];
+              resolve(XLSX.utils.sheet_to_json(sheet, { defval: '' }));
+            } catch (err) { reject(err); }
           };
-          reader2.onerror=reject;
+          reader2.onerror = reject;
           reader2.readAsArrayBuffer(file);
         }
       });
     }
 
-    // IMPORT
-    window.importSalesFile = async function(){
-      var input=document.getElementById('salesFileInput'),file=input.files[0];
-      if(!file){alert('Please select a file');return;}
+    // ===== IMPORT =====
+    window.importSalesFile = async function() {
+      var input = document.getElementById('salesFileInput'), file = input.files[0];
+      if (!file) { alert('Please select a file'); return; }
       showLoading();
-      try{
-        var rows=await parseFile(file), imported=0;
-        rows.forEach(function(row){
-          var platform=row.Platform||row.platform||'eBay', item=row.Item||row.item||row['Item Description']||row['Listing title']||row.Description||'';
-          var price=parseFloat(row.Price||row.price||row['Sale Price']||row['Total sales (Includes taxes)']||0);
-          var cost=parseFloat(row.Cost||row.cost||row['Cost Paid']||0), fees=parseFloat(row.Fees||row.fees||row['Total selling costs']||0);
-          var shipping=parseFloat(row.Shipping||row.shipping||row['Shipping Cost']||0), notes=row.Notes||row.notes||'';
-          var rawDate=row.Date||row.date||row['Sale Date']||row['Transaction date']||'';
-          var date=rawDate?new Date(rawDate).toISOString():new Date().toISOString();
-          if(item&&price>0){window.sales.push({id:generateId(),date:date,platform:platform,item:item,price:price,cost:cost,fees:fees,shipping:shipping,netProfit:price-cost-fees-shipping,notes:notes});imported++;}
+      try {
+        var rows = await parseFile(file), imported = 0;
+        rows.forEach(function(row) {
+          var platform = row.Platform || row.platform || 'eBay';
+          var item = row.Item || row.item || row['Item Description'] || row['Listing title'] || row.Description || '';
+          var price = parseFloat(row.Price || row.price || row['Sale Price'] || row['Total sales (Includes taxes)'] || 0);
+          var cost = parseFloat(row.Cost || row.cost || row['Cost Paid'] || 0);
+          var fees = parseFloat(row.Fees || row.fees || row['Total selling costs'] || 0);
+          var shipping = parseFloat(row.Shipping || row.shipping || row['Shipping Cost'] || 0);
+          var notes = row.Notes || row.notes || '';
+          var rawDate = row.Date || row.date || row['Sale Date'] || row['Transaction date'] || '';
+          var date = rawDate ? new Date(rawDate).toISOString() : new Date().toISOString();
+          if (item && price > 0) {
+            window.sales.push({ id: generateId(), date: date, platform: platform, item: item, price: price, cost: cost, fees: fees, shipping: shipping, netProfit: price - cost - fees - shipping, notes: notes, photo: '' });
+            imported++;
+          }
         });
-        if(imported>0){saveData();updateDashboard();renderHistory();alert('✅ Imported '+imported+' sales!');input.value='';}
-        else{alert('No valid sales found. Check column names.');}
-      }catch(err){console.error(err);alert('Error reading file.');}
-      hideLoading();
-    };
-    window.importPurchasesFile = async function(){
-      var input=document.getElementById('purchasesFileInput'),file=input.files[0];
-      if(!file){alert('Please select a file');return;}
-      showLoading();
-      try{
-        var rows=await parseFile(file), imported=0;
-        rows.forEach(function(row){
-          var source=row.Source||row.source||'Other', cost=parseFloat(row.Cost||row.cost||row['Total Cost']||0);
-          var items=parseInt(row.Items||row.items||row['Number of Items']||0), notes=row.Notes||row.notes||row.Description||'';
-          var rawDate=row.Date||row.date||row['Purchase Date']||'';
-          if(cost>0){window.purchases.push({id:generateId(),date:rawDate?new Date(rawDate).toISOString():new Date().toISOString(),source:source,cost:cost,items:items,notes:notes});imported++;}
-        });
-        if(imported>0){saveData();updateDashboard();renderHistory();alert('✅ Imported '+imported+' purchases!');input.value='';}
-        else{alert('No valid purchases found. Check column names.');}
-      }catch(err){console.error(err);alert('Error reading file.');}
+        if (imported > 0) { saveData(); updateDashboard(); renderInventory(); alert('✅ Imported ' + imported + ' sales!'); input.value = ''; }
+        else { alert('No valid sales found. Check column names.'); }
+      } catch (err) { console.error(err); alert('Error reading file.'); }
       hideLoading();
     };
 
-    // EXPORT
-    window.exportToExcel = function(){
-      if(window.sales.length===0&&window.purchases.length===0){alert('No data to export!');return;}
-      var wb=XLSX.utils.book_new();
-      if(window.sales.length>0){
-        var sd=window.sales.map(function(s){return{Date:new Date(s.date).toLocaleDateString(),Platform:s.platform,Item:s.item,'Sale Price':s.price,Cost:s.cost,Fees:s.fees||0,Shipping:s.shipping||0,'Net Profit':s.netProfit,Notes:s.notes||''};});
-        XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(sd),'Sales');
+    window.importPurchasesFile = async function() {
+      var input = document.getElementById('purchasesFileInput'), file = input.files[0];
+      if (!file) { alert('Please select a file'); return; }
+      showLoading();
+      try {
+        var rows = await parseFile(file), imported = 0;
+        rows.forEach(function(row) {
+          var source = row.Source || row.source || 'Other';
+          var cost = parseFloat(row.Cost || row.cost || row['Total Cost'] || 0);
+          var items = parseInt(row.Items || row.items || row['Number of Items'] || 0);
+          var notes = row.Notes || row.notes || row.Description || '';
+          var rawDate = row.Date || row.date || row['Purchase Date'] || '';
+          if (cost > 0) {
+            window.purchases.push({ id: generateId(), date: rawDate ? new Date(rawDate).toISOString() : new Date().toISOString(), source: source, cost: cost, items: items, notes: notes, photo: '' });
+            imported++;
+          }
+        });
+        if (imported > 0) { saveData(); updateDashboard(); renderInventory(); alert('✅ Imported ' + imported + ' purchases!'); input.value = ''; }
+        else { alert('No valid purchases found. Check column names.'); }
+      } catch (err) { console.error(err); alert('Error reading file.'); }
+      hideLoading();
+    };
+
+    // ===== EXPORT =====
+    window.exportToExcel = function() {
+      if (window.sales.length === 0 && window.purchases.length === 0) { alert('No data to export!'); return; }
+      var wb = XLSX.utils.book_new();
+      if (window.sales.length > 0) {
+        var sd = window.sales.map(function(s) { return { Date: new Date(s.date).toLocaleDateString(), Platform: s.platform, Item: s.item, 'Sale Price': s.price, Cost: s.cost, Fees: s.fees || 0, Shipping: s.shipping || 0, 'Net Profit': s.netProfit, Notes: s.notes || '' }; });
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(sd), 'Sales');
       }
-      if(window.purchases.length>0){
-        var pd=window.purchases.map(function(p){return{Date:new Date(p.date).toLocaleDateString(),Source:p.source,Cost:p.cost,Items:p.items||0,'Avg Cost Per Item':p.items>0?(p.cost/p.items):0,Notes:p.notes||''};});
-        XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(pd),'Purchases');
+      if (window.purchases.length > 0) {
+        var pd = window.purchases.map(function(p) { return { Date: new Date(p.date).toLocaleDateString(), Source: p.source, Cost: p.cost, Items: p.items || 0, 'Avg Cost Per Item': p.items > 0 ? (p.cost / p.items) : 0, Notes: p.notes || '' }; });
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(pd), 'Purchases');
       }
-      XLSX.writeFile(wb,'CardTrackerPro_Export.xlsx');
+      XLSX.writeFile(wb, 'CardTrackerPro_Export.xlsx');
     };
   </script>
 </body>
